@@ -1,0 +1,18 @@
+[
+    {
+        "id_tomador": "43491650F",
+        "denominacion": "Jeronimo",
+        "fecha_nacimiento": "14/06/1990",
+        "domicilio": "C/La cruz 10",
+        "movil_contacto": "648754429",
+        "email_contacto": "jero@gmail.com"
+    },
+    {
+        "id_tomador": "12345678Z",
+        "denominacion": "Pablo Tejeda",
+        "fecha_nacimiento": "25/05/2002",
+        "domicilio": "Por icod vive",
+        "movil_contacto": "548651245",
+        "email_contacto": "asdasd@asdasd.com"
+    }
+]

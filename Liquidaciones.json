@@ -1,0 +1,22 @@
+[
+    {
+        "nro_liquidacion": "2024-000000",
+        "fecha_liquidacion": "20/02/2024",
+        "estado_liquidacion": "Abierta",
+        "importe_recibos_cobrados": 500.0,
+        "lista_recibos_liquidar": [
+            [
+                "000000000000",
+                "000000000000"
+            ]
+        ],
+        "importe_recibos_baja": 0.0,
+        "lista_recibos_baja": [],
+        "importe_siniestros_pagados": 0.0,
+        "lista_siniestros_liquidados": [],
+        "importe_liquidacion": [
+            500.0,
+            0.0
+        ]
+    }
+]
