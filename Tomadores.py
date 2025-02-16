@@ -6,6 +6,7 @@ def menu_tomadores():
     """Menu de tomadores, permite crear, modificar o eliminar un tomador"""
     opcion_tomadores = "0"
     while opcion_tomadores != "9":
+        Utilidades.limpiar_pantalla()
         print("1. Crear tomador")
         print("2. Modificar tomador")
         print("3. Eliminar tomador")
@@ -27,10 +28,10 @@ def menu_tomadores():
 def crear_tomador():
     """Pide datos para crear un tomador, los guarda en un diccionario y lo añade a la lista de tomadores"""
     global listaTomadores
+    Utilidades.limpiar_pantalla()
     print("Creando tomador")
     id_tomador = configurar_tomador()
-    
-    if id_tomador == "!salir":
+    if id_tomador == "":
         return
     
     denominacion = input("Introduce el nombre de la persona o empresa: ")
@@ -38,21 +39,34 @@ def crear_tomador():
     domicilio = configurar_domicilio()
     movil_contacto = configurar_movil_contacto()
     email_contacto = configurar_email_contacto()
-    listaTomadores.append({"id_tomador":id_tomador, "denominacion":denominacion, "fecha_nacimiento":fecha_nacimiento, "domicilio":domicilio, "movil_contacto":movil_contacto, "email_contacto":email_contacto})
-    guardar_tomadores()
-    print("Tomador creado")
+    tomador = {"id_tomador":id_tomador, "denominacion":denominacion, "fecha_nacimiento":fecha_nacimiento, "domicilio":domicilio, "movil_contacto":movil_contacto, "email_contacto":email_contacto}
+
+    
+    while True:
+        Utilidades.limpiar_pantalla()
+        listar_tomador(tomador, True)
+        confirmacion = input("¿Estás seguro de que quieres crear el tomador? (s/n): ").lower()
+        if confirmacion == "s":
+            listaTomadores.append(tomador)
+            guardar_tomadores()
+            print("Tomador creado")
+            break
+        elif confirmacion == "n":
+            print("Tomador no creado")
 
 def modificar_tomador():
     """Pide el DNI, NIE o CIF del tomador a modificar, muestra los datos y entra en un menu que permite modificarlos"""
+    Utilidades.limpiar_pantalla()
     listar_tomadores()
     id_tomador = configurar_tomador(True)
-    if id_tomador == "!salir":
+    if id_tomador == "":
         return
     for dato in listaTomadores:
         if dato["id_tomador"] == id_tomador:
             tomador_eleccion = dato
     
     while True:
+        Utilidades.limpiar_pantalla()
         listar_tomador(tomador_eleccion)
         opcion_modificar = input("Introduce una opción: ")
         match opcion_modificar:
@@ -74,9 +88,10 @@ def modificar_tomador():
 
 def eliminar_tomador():
     """Selecciona un tomador y si es posible lo elimina de la lista de tomadores"""
+    Utilidades.limpiar_pantalla()
     listar_tomadores()
     id_tomador = configurar_tomador(True)
-    if id_tomador == "!salir":
+    if id_tomador == "":
         return
     for dato in listaTomadores:
         if dato["id_tomador"] == id_tomador:
@@ -93,7 +108,7 @@ def eliminar_tomador():
             else:
                 polizas_no_activas.append(poliza)
     else:
-        confirmacion = input("¿Estás seguro de que quieres borrar el tomador? (s/n): ")
+        confirmacion = input("¿Estás seguro de que quieres borrar el tomador? (s/n): ").lower()
         if confirmacion == "s":
             if polizas_no_activas:
                 for poliza in polizas_no_activas:
@@ -108,7 +123,7 @@ def listar_tomadores() -> None:
     for datos in listaTomadores:
         print(f"ID: {datos['id_tomador']}, Denominación: {datos['denominacion']}")
 
-def listar_tomador(tomador:dict) -> None:
+def listar_tomador(tomador:dict, creando:bool = False) -> None:
     """Muestra los datos de un tomador"""
     print(f"ID: {tomador['id_tomador']}, Denominación: {tomador['denominacion']}")
     print(f"1. Denominación: {tomador['denominacion']}")
@@ -116,7 +131,8 @@ def listar_tomador(tomador:dict) -> None:
     print(f"3. Domicilio: {tomador['domicilio']}")
     print(f"4. Móvil de contacto: {tomador['movil_contacto']}")
     print(f"5. Email de contacto: {tomador['email_contacto']}")
-    print("9. Volver")
+    if not creando:
+        print("9. Volver")
 
 def cargar_tomadores() -> None:
     """Carga los tomadores guardados en el archivo tomadores.json"""
@@ -139,9 +155,12 @@ def guardar_tomadores() -> None:
 def configurar_tomador(modificando:bool=False) -> str:
     """Pide el DNI, NIE o CIF del tomador y devuelve el valor introducido. Si el valor ya existe en la lista de tomadores, lo indica y pide otro valor. Si el valor introducido no es correcto, lo indica y pide otro valor."""
     while True:
-        tomador_id = input("Introduce el DNI, NIE o CIF del tomador (!salir): ")
-        if tomador_id == "!salir":
-            return tomador_id
+        tomador_id = input("Introduce el DNI, NIE o CIF del tomador: ")
+        if tomador_id == "":
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
+            continue
         elif tomador_id in [tomador["id_tomador"] for tomador in listaTomadores] and not modificando:
             print("El tomador ya existe")
         elif tomador_id not in [tomador["id_tomador"] for tomador in listaTomadores] and modificando:

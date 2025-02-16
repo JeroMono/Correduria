@@ -1,10 +1,12 @@
 import Polizas
 import Liquidaciones
+from Utilidades import limpiar_pantalla as limpiar_pantalla
 
 def menu_estadisticas() -> None:
     """Menu de estadisticas, permite selecionar ver la información de una póliza o de una liquidación"""
     opcion_estadistica = "0"
     while (opcion_estadistica != "9"):
+        limpiar_pantalla()
         print("1. Información de póliza")
         print("2. Información de liquidación")
         

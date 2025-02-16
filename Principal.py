@@ -4,6 +4,7 @@ import Recibos
 import Siniestros
 import Liquidaciones
 import Estadisticas
+from Utilidades import limpiar_pantalla as limpiar_pantalla
 
 if __name__ == "__main__":
     Polizas.cargar_polizas()
@@ -14,6 +15,7 @@ if __name__ == "__main__":
     Siniestros.guardar_siniestros()
     opcion = "0"
     while (opcion != "9"):
+        limpiar_pantalla()
         print("1. Pólizas")
         print("2. Tomadores")
         print("3. Recibos")

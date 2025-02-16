@@ -6,6 +6,7 @@ def menu_recibos() -> None:
     """Menu de recibos, permite crear, modificar y eliminar recibos"""
     opcion_recibos = 0
     while (opcion_recibos != "9"):
+        Utilidades.limpiar_pantalla()
         print("1. Crear recibo")
         print("2. Modificar recibo")
         print("3. Eliminar recibo")
@@ -25,8 +26,13 @@ def menu_recibos() -> None:
 
 def crear_recibo() -> None:
     """ Pide la información necesaria para crear un recibo, la valida y lo añade a la lista de recibos"""
+    global ultimo_recibo
+    Utilidades.limpiar_pantalla()
     id_recibo = generar_id_recibo()
     nro_poliza = configurar_nro_poliza()
+    if nro_poliza == "":
+        return
+
     fecha_inicio = configurar_fecha_inicio()
     duracion = configurar_duracion()
     importe_cobrar = configurar_importe_cobrar()
@@ -35,24 +41,36 @@ def crear_recibo() -> None:
     importe_pagar = configurar_importe_pagar()
     estado_liquidacion = "Pendiente"
     fecha_liquidacion = configurar_fecha_liquidacion(estado_liquidacion)
-    listaRecibos.append({"id_recibo":id_recibo,"nro_poliza":nro_poliza, "fecha_inicio":fecha_inicio, "duracion":duracion, "importe_cobrar":importe_cobrar, "fecha_cobro":fecha_cobro, "estado_recibo":estado_recibo, "importe_pagar":importe_pagar, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion})
-    guardar_recibos()
+
+    recibo = {"id_recibo":id_recibo,"nro_poliza":nro_poliza, "fecha_inicio":fecha_inicio, "duracion":duracion, "importe_cobrar":importe_cobrar, "fecha_cobro":fecha_cobro, "estado_recibo":estado_recibo, "importe_pagar":importe_pagar, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion}
+    listar_recibo(recibo, True)
+    confirmacion = input("¿Estás seguro de que quieres crear el recibo? (s/n): ")
+    if confirmacion == "s":
+        listaRecibos.append(recibo)
+        ultimo_recibo = int(id_recibo)
+        guardar_recibos()
+        print("Recibo creado")
+    else:
+        print("Operación cancelada")
 
 
 def guardar_recibos() -> None:
     """Guarda la lista de recibos en un archivo json"""
     try:
         with open("recibos.json", "w") as archivo_recibos:
-            json.dump(listaRecibos, archivo_recibos, ensure_ascii=False, indent=4)
+            json.dump({"ultimo_recibo":ultimo_recibo,"recibos":listaRecibos}, archivo_recibos, ensure_ascii=False, indent=4)
     except:
         print("Error al guardar los recibos")
 
 def cargar_recibos() -> None:
     """Carga la lista de recibos desde un archivo json"""
     global listaRecibos
+    global ultimo_recibo
     try:
         with open("recibos.json", "r", encoding='utf-8') as archivo_recibos:
-            listaRecibos = json.load(archivo_recibos)
+            data = json.load(archivo_recibos)
+            ultimo_recibo = data["ultimo_recibo"]
+            listaRecibos = data["recibos"]
     except:
         print("Error al cargar los recibos")
 
@@ -60,8 +78,11 @@ def cargar_recibos() -> None:
 def modificar_recibo() -> None:
     """Selecciona y entra en un menú para modificar los valores seleccionados"""
     global listaRecibos
+    Utilidades.limpiar_pantalla()
     listar_recibos()
     recibo_eleccion = seleccionar_recibo()
+    if recibo_eleccion == "":
+        return
 
     while True:
         listar_recibo(recibo_eleccion)
@@ -90,10 +111,11 @@ def modificar_recibo() -> None:
 def eliminar_recibo() -> None:
     """Selecciona y elimina un recibo de la lista de recibos"""
     global listaRecibos
+    Utilidades.limpiar_pantalla()
     listar_recibos()
     recibo_eleccion = seleccionar_recibo()
 
-    if recibo_eleccion == "!salir":
+    if recibo_eleccion == "":
         return
     
     if recibo_eleccion['estado_recibo'] != "Baja":
@@ -106,6 +128,7 @@ def eliminar_recibo() -> None:
             print("Recibo eliminado")
         else:
             print("Operación cancelada")
+    input("Pulse enter para continuar")
 
 def listar_recibos() -> None:
     """Muestra una lista con los recibos"""
@@ -113,7 +136,7 @@ def listar_recibos() -> None:
     for recibo in listaRecibos:
         print(f"{recibo['id_recibo']:<13}{recibo['nro_poliza']:<13}{recibo['fecha_inicio']:<13}{recibo['duracion']:<11}{recibo['importe_cobrar']:<15}{recibo['fecha_cobro']:<12}{recibo['estado_recibo']:<14}{recibo['importe_pagar']:<14}{recibo['estado_liquidacion']:<19}{recibo['fecha_liquidacion']:<20}")
 
-def listar_recibo(recibo:dict) -> None:
+def listar_recibo(recibo:dict, creando:bool = False) -> None:
     """Muestra la información de un recibo"""
     print(f"Modificando recibo: {recibo['id_recibo']}")
     print(f"1. Número de póliza: {recibo['nro_poliza']}")
@@ -125,23 +148,24 @@ def listar_recibo(recibo:dict) -> None:
     print(f"7. Importe a pagar: {recibo['importe_pagar']}")
     print(f"-> Estado de la liquidación: {recibo['estado_liquidacion']}")
     print(f"-> Fecha de liquidación: {recibo['fecha_liquidacion']}")
-    print("9. Salir")
+    if not creando:
+        print("9. Salir")
 
 def generar_id_recibo() -> str:
     """Genera un ID único correlativo para un recibo"""
-    if listaRecibos:
-        ultimo_id = max(int(recibo['id_recibo']) for recibo in listaRecibos) + 1
-    else:
-        ultimo_id = 0
-    return f"{ultimo_id:012d}"
+    return f"{int(ultimo_recibo)+1:012d}"
 
 def seleccionar_recibo() -> str:
     """Pide seleccionar un recibo y devuelve el recibo seleccionado"""
     while True:
         id_recibo = input("Introduce el ID del recibo: ")
+        if id_recibo == "":
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
+            continue
         try:
             id_recibo = int(id_recibo)
-            
         except:
             print("El ID debe ser un número")
             if id_recibo == "!salir":
@@ -158,6 +182,11 @@ def configurar_nro_poliza() -> str:
     """Pide el número de póliza, lo valida y lo retorna"""
     while True:
         nro_poliza = input("Introduce el número de póliza: ")
+        if nro_poliza == "":
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
+            continue
         try:
             nro_poliza = int(nro_poliza)
         except:
@@ -169,6 +198,9 @@ def configurar_nro_poliza() -> str:
                 return nro_poliza
         else:
             print("La póliza no existe")
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
     
 def configurar_fecha_inicio() -> str:
     """Pide la fecha de inicio del recibo, la valida y la retorna"""

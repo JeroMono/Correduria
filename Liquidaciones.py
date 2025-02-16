@@ -7,6 +7,7 @@ def menu_liquidaciones() -> None:
     """Menú de liquidaciones, permite crear, modificar y cerrar liquidaciones"""
     opcion_liquidaciones = "0"
     while (opcion_liquidaciones != "9"):
+        Utilidades.limpiar_pantalla()
         print("1. Crear liquidación")
         print("2. Modificar liquidación")
         print("3. Eliminar liquidación")

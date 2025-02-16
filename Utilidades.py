@@ -1,4 +1,5 @@
 import datetime
+import os
 
 def comprobar_dni(dni:str) -> tuple[bool, bool]:
     """ Comprueba si un DNI, NIE o CIF es correcto.
@@ -198,6 +199,9 @@ def fecha_actual() -> str:
     """Devuelve la fecha actual en formato dd/mm/yyyy."""
     return datetime.datetime.now().strftime("%d/%m/%Y")
 
+def limpiar_pantalla() -> None:
+    """Limpia la pantalla de la consola."""
+    os.system("cls" if os.name == "nt" else "clear")
 
 # Ajustes de fechas
 AÑO_LIMITE_SUPERIOR = 2100

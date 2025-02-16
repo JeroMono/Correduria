@@ -6,6 +6,7 @@ def menu_siniestros() -> None:
     """Menu de siniestros, permite crear, modificar o eliminar un siniestro"""
     opcion_siniestros = "0"
     while (opcion_siniestros != "9"):
+        Utilidades.limpiar_pantalla()
         print("1. Crear siniestro")
         print("2. Modificar siniestro")
         print("3. Eliminar siniestro")
@@ -28,13 +29,11 @@ def crear_siniestro() -> None:
     global listaSiniestros
     print("Creando siniestro")
     fecha_siniestro = configurar_fecha_siniestro()
+    if fecha_siniestro == "":
+        return
     nro_siniestro = generar_nro_siniestro(fecha_siniestro)
     nro_poliza = configurar_poliza_siniestro(fecha_siniestro)
-    if nro_poliza == "Caducada":
-        print("Poliza no vigente. Volviendo al menú")
-        return
-    elif nro_poliza == "":
-        print("Poliza no encontrada. Volviendo al menú")
+    if nro_poliza == "":
         return
     descripcion = configurar_desc_siniestro()
     matricula_contrario = configurar_matricula_contrario()
@@ -54,15 +53,21 @@ def crear_siniestro() -> None:
 def modificar_siniestro() -> None:
     """Selecciona un siniestro valido, y entra en un menú"""
     global listaSiniestros
+    Utilidades.limpiar_pantalla()
     listar_siniestros()
     modificar_siniestro = seleccionar_siniestro()
+    if not modificar_siniestro:
+        return
 
     while True:
+        Utilidades.limpiar_pantalla()
         listar_siniestro(modificar_siniestro)
         opcion_modificar = input("Introduce una opción: ")
         match opcion_modificar:
             case "1":
-                modificar_siniestro["nro_poliza"] = configurar_poliza_siniestro(modificar_siniestro["fecha_abono"])
+                poliza = configurar_poliza_siniestro(modificar_siniestro["fecha_abono"])
+                if poliza != "":
+                    modificar_siniestro["nro_poliza"] = poliza
             case "2":
                 modificar_siniestro["descripcion"] = configurar_desc_siniestro()
             case "3":
@@ -149,6 +154,11 @@ def seleccionar_siniestro() -> dict:
     while True:
         try:
             año_siniestro = input("Introduce el año de siniestro: ")
+            if not año_siniestro:
+                confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+                if confirmacion == "s":
+                    return ""
+                continue
             año_siniestro = int(año_siniestro)
         except:
             print("El año debe ser un número")
@@ -169,6 +179,11 @@ def seleccionar_siniestro() -> dict:
         
         while True:
             numero_siniestro = input("Introduce el número de siniestro: ")
+            if not numero_siniestro:
+                confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+                if confirmacion == "s":
+                    return ""
+                continue
             try: 
                 numero_siniestro = str(int(numero_siniestro)).zfill(6)
             except:
@@ -204,6 +219,11 @@ def configurar_fecha_siniestro() -> str:
     """Pide la fecha del siniestro y la valida"""
     while True:
         fecha_siniestro = input("Introduce la fecha del siniestro (dd/mm/aaaa): ")
+        if not fecha_siniestro:
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
+            continue
         fecha_siniestro = Utilidades.validar_fecha(fecha_siniestro)
         if fecha_siniestro:
             dia_s, mes_s, año_s = fecha_siniestro.split("/")
@@ -218,6 +238,10 @@ def configurar_poliza_siniestro(fecha:str) -> str:
     dia_s, mes_s, año_s = fecha.split("/")
     while True:
         nro_poliza = input("Introduce el número de póliza: ")
+        if not nro_poliza:
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
         try:
             nro_poliza = str(int(nro_poliza)).zfill(12)
         except:
@@ -227,17 +251,13 @@ def configurar_poliza_siniestro(fecha:str) -> str:
         for poliza in Polizas.listaPolizas:
             if poliza["nro_poliza"] == nro_poliza:
                 poliza_encontrada = True
-                if poliza["estado_poliza"] == "Cobrada":
-                    fecha_emision = poliza["fecha_emision"].split("/")
-                    if int(año_s) <= int(fecha_emision[2]) and int(mes_s) <= int(fecha_emision[1]) and int(dia_s) <= int(fecha_emision[0]):
-                        print("La póliza está caducada")
-                    else:
-                        return nro_poliza
+                if Polizas.comprobar_vigencia(poliza):
+                    return nro_poliza
                 else:
                     print("La póliza no está activa")
                     confirmacion = input("¿Quieres introducir otro número de póliza? (s/n): ").upper()
                     if confirmacion == "N":
-                        return "Caducada"
+                        return ""
                     else:
                         continue
         if not poliza_encontrada:
