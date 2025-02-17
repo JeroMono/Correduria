@@ -191,13 +191,13 @@ def validar_carnet_conducir(tipos_carnet:str, tipo_vehiculo:str) -> bool:
     for carnet in tipos_carnet:
         if carnet in TIPOS_VALIDOS[tipo_vehiculo]:
             return True
-    
+
     # Si no se ha encontrado ningún carnet válido
     return False
 
 def fecha_actual() -> str:
-    """Devuelve la fecha actual en formato dd/mm/yyyy."""
-    return datetime.datetime.now().strftime("%d/%m/%Y")
+    """Devuelve la fecha actual en formato aaaa/mm/dd."""
+    return datetime.datetime.now().strftime("%Y/%m/%d")
 
 def limpiar_pantalla() -> None:
     """Limpia la pantalla de la consola."""

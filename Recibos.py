@@ -2,7 +2,7 @@ import Polizas
 import Utilidades
 import json
 
-def menu_recibos() -> None:
+def mostrar_menu_recibos() -> None:
     """Menu de recibos, permite crear, modificar y eliminar recibos"""
     opcion_recibos = 0
     while (opcion_recibos != "9"):
@@ -14,19 +14,20 @@ def menu_recibos() -> None:
         opcion_recibos = input("Introduce una opción: ")
         match opcion_recibos:
             case "1":
-                crear_recibo()
+                mostrar_menu_crear_recibo()
             case "2":
-                modificar_recibo()
+                mostrar_menu_modificar_recibo()
             case "3":
-                eliminar_recibo()
+                mostrar_menu_eliminar_recibo()
             case "9":
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
 
-def crear_recibo() -> None:
+def mostrar_menu_crear_recibo() -> None:
     """ Pide la información necesaria para crear un recibo, la valida y lo añade a la lista de recibos"""
     global ultimo_recibo
+    global listaRecibos
     Utilidades.limpiar_pantalla()
     id_recibo = generar_id_recibo()
     nro_poliza = configurar_nro_poliza()
@@ -52,9 +53,18 @@ def crear_recibo() -> None:
             ultimo_recibo = int(id_recibo)
             guardar_recibos()
             print("Recibo creado")
+            for poliza in Polizas.listaPolizas:
+                if poliza['nro_poliza'] == nro_poliza:
+                    if Polizas.comprobar_vigencia(poliza):
+                        poliza['estado_poliza'] = "Cobrada"
+                        print(f"Vigente de la poliza {nro_poliza} actualizada, ahora está vigente")
+                        Polizas.guardar_polizas()
+                        break
+            input("Pulse <Enter> para continuar")
             break
         elif confirmacion == "n":
             print("Operación cancelada")
+            input("Pulse <Enter> para continuar")
             break
 
 
@@ -75,11 +85,12 @@ def cargar_recibos() -> None:
             data = json.load(archivo_recibos)
             ultimo_recibo = data["ultimo_recibo"]
             listaRecibos = data["recibos"]
+            print(f"{len(listaRecibos)} Recibos cargados")
     except:
-        print("Error al cargar los recibos")
+        print("No existen recibos guardados")
 
 
-def modificar_recibo() -> None:
+def mostrar_menu_modificar_recibo() -> None:
     """Selecciona y entra en un menú para modificar los valores seleccionados"""
     global listaRecibos
     Utilidades.limpiar_pantalla()
@@ -112,7 +123,7 @@ def modificar_recibo() -> None:
                 print("Opción incorrecta")
         guardar_recibos()
         
-def eliminar_recibo() -> None:
+def mostrar_menu_eliminar_recibo() -> None:
     """Selecciona y elimina un recibo de la lista de recibos"""
     global listaRecibos
     Utilidades.limpiar_pantalla()
@@ -132,13 +143,13 @@ def eliminar_recibo() -> None:
             print("Recibo eliminado")
         else:
             print("Operación cancelada")
-    input("Pulse enter para continuar")
+    input("Pulse <Enter> para continuar")
 
 def listar_recibos() -> None:
     """Muestra una lista con los recibos"""
-    print(f"{'ID':<13}{'Póliza':<13}{'Fecha_inicio':<13}{'Duración':<11}{'Importe_cobrar':<15}{'Fecha_cobro':<12}{'Estado_recibo':<14}{'Importe_pagar':<14}{'Estado_liquidación':<19}{'Fecha_liquidación':<20}")
+    print(f"{'ID':<13}{'Póliza':<13}{'Fecha_inicio':<13}{'Duración':<11}{'Importe_cobrar':<15}{'Fecha_cobro':<12}{'Estado_recibo':<17}{'Importe_pagar':<14}{'Estado_liquidación':<19}{'Fecha_liquidación':<20}")
     for recibo in listaRecibos:
-        print(f"{recibo['id_recibo']:<13}{recibo['nro_poliza']:<13}{recibo['fecha_inicio']:<13}{recibo['duracion']:<11}{recibo['importe_cobrar']:<15}{recibo['fecha_cobro']:<12}{recibo['estado_recibo']:<14}{recibo['importe_pagar']:<14}{recibo['estado_liquidacion']:<19}{recibo['fecha_liquidacion']:<20}")
+        print(f"{recibo['id_recibo']:<13}{recibo['nro_poliza']:<13}{recibo['fecha_inicio']:<13}{recibo['duracion']:<11}{recibo['importe_cobrar']:<15}{recibo['fecha_cobro']:<12}{recibo['estado_recibo']:<17}{recibo['importe_pagar']:<14}{recibo['estado_liquidacion']:<19}{recibo['fecha_liquidacion']:<20}")
 
 def listar_recibo(recibo:dict, creando:bool = False) -> None:
     """Muestra la información de un recibo"""
@@ -277,41 +288,6 @@ def configurar_estado_recibo(poliza_nro:str, duracion_:str, fecha_:str, modifica
                             estado_recibo = "Cobrado"
                         else:
                             estado_recibo = "Cobrado_Banco"
-                        # Cambiamos el estado de la póliza a Cobrada si el recibo cubre la póliza en el momento de cobrarlo
-                        if poliza['estado_poliza'] == "PteCobro":
-                            recibo_cubre_poliza = True
-                            fecha_ = fecha_.split("/")
-                            dia_recibo = int(fecha_[0])
-                            mes_recibo = int(fecha_[1])
-                            año_recibo = int(fecha_[2])
-                            if duracion_ == "Anual":
-                                fecha_ = [dia_recibo, mes_recibo, año_recibo + 1]
-                            elif duracion_ == "Semestral":
-                                mes, resto = (mes_recibo + 6) % 12, (mes_recibo + 6) // 12
-                                año = año_recibo + resto
-                                fecha_ = [dia_recibo, mes, año]
-                            elif duracion_ == "Trimestral":
-                                mes, resto = (mes_recibo + 3) % 12, (mes_recibo + 3) // 12
-                                año = año_recibo + resto
-                                fecha_ = [dia_recibo, mes, año]
-                            elif duracion_ == "Mensual":
-                                mes, resto = (mes_recibo + 1) % 12, (mes_recibo + 1) // 12
-                                año = año_recibo + resto
-                                fecha_ = [dia_recibo, mes, año]
-                            
-                            fecha_actual = Utilidades.fecha_actual()
-                            fecha_actual = list(map(int, fecha_actual.split("/")))
-
-                            if fecha_actual[2] > fecha_[2]:
-                                recibo_cubre_poliza = False
-                            elif fecha_actual[2] <= fecha_[2]:
-                                if fecha_actual[1] > fecha_[1]:
-                                    recibo_cubre_poliza = False
-                                elif fecha_actual[1] <= fecha_[1]:
-                                    if fecha_actual[0] > fecha_[0]:
-                                        recibo_cubre_poliza = False
-                            if recibo_cubre_poliza:
-                                poliza['estado_poliza'] = "Cobrada"
                         break
             elif estado_recibo in ["B", "BAJA"]:
                 estado_recibo = "Baja"

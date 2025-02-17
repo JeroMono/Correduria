@@ -1,8 +1,10 @@
 import Polizas
 import Liquidaciones
+import Siniestros
+import Recibos
 from Utilidades import limpiar_pantalla as limpiar_pantalla
 
-def menu_estadisticas() -> None:
+def mostrar_menu_estadisticas() -> None:
     """Menu de estadisticas, permite selecionar ver la información de una póliza o de una liquidación"""
     opcion_estadistica = "0"
     while (opcion_estadistica != "9"):
@@ -14,16 +16,16 @@ def menu_estadisticas() -> None:
         opcion_estadistica = input("Introduce una opción: ")
         match opcion_estadistica:
             case "1":
-                informacion_poliza()
+                mostrar_menu_informacion_poliza()
             case "2":
-                informacion_liquidacion()
+                mostrar_menu_informacion_liquidacion()
             case "9":
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
 
 
-def informacion_poliza() -> None:
+def mostrar_menu_informacion_poliza() -> None:
     """Pide seleccionar una póliza y muestra su información"""
     limpiar_pantalla()
     Polizas.listar_polizas()
@@ -34,30 +36,42 @@ def informacion_poliza() -> None:
     print("Información de la póliza")
     print(f"Número de póliza: {poliza['nro_poliza']}")
     print(f"Tomador: {poliza['id_tomador']}")
-    print(f"Datos del vehiculo:")
-    print(f"Matricula: {poliza['datos_vehiculo'][0]}")
-    print(f"Tipo: {poliza['datos_vehiculo'][1]}")
-    print(f"Marca: {poliza['datos_vehiculo'][2]}")
-    print(f"Modelo: {poliza['datos_vehiculo'][3]}")
-    print(f"Tipo de funcionamiento: {poliza['datos_vehiculo'][4]}")
-    print(f"Cobertura: {poliza['cobertura']}")
+    print(f"Matricula: {poliza['matricula']}")
+    print(f"Tipo: {poliza['datos_vehiculo'][0]}, Marca: {poliza['datos_vehiculo'][1]}, Modelo: {poliza['datos_vehiculo'][2]}, Tipo de funcionamiento: {poliza['datos_vehiculo'][3]}")
+    print(f"Cobertura: ", end="")
+    if type(poliza['cobertura']) == str:
+        print(poliza['cobertura'])
+    elif type(poliza['cobertura']) == tuple:
+        if type(poliza['cobertura'][1]) == tuple:
+            print(f"{poliza['cobertura'][0]}, {poliza['cobertura'][1][0]} con franquicia de {poliza['cobertura'][1][1]}")
+        else:
+            for cobertura in poliza['cobertura'][:-1]:
+                print(cobertura, end=" ")
+            print(poliza['cobertura'][-1])
+
     print(f"Estado: {poliza['estado_poliza']}")
     print(f"Fecha de emisión: {poliza['fecha_emision']}")
-    if type(poliza["forma_pago"])== list:
+    if len(poliza['forma_pago']) == 2:
         print(f"Forma de pago: {poliza['forma_pago'][0]}")
-        print(f"Numero de cuenta: {poliza['forma_pago'][1]}")
+        print(f"   IBAN: {poliza['forma_pago'][1]}")
     else:
         print(f"Forma de pago: {poliza['forma_pago']}")
     print("Vigencia: ",end="")
     print('Vigente' if Polizas.comprobar_vigencia(poliza) else 'No Vigente')
-    input("Pulse enter para continuar")
+    print("Recibos asociados:")
+    for recibo in Recibos.listaRecibos:
+        if recibo["nro_poliza"] == poliza["nro_poliza"]:
+            print(f"  Número de recibo: {recibo['id_recibo']}, Fecha de inicio: {recibo['fecha_inicio']}, Estado: {recibo['estado_recibo']}")
+    print("Siniestros asociados:")
+    for siniestro in Siniestros.listaSiniestros:
+        if siniestro["nro_poliza"] == poliza["nro_poliza"]:
+            print(f"  Número de siniestro: {siniestro['nro_siniestro']}, Importe siniestro: {siniestro['importe_pagar']}, Descrición: {siniestro['descripcion']}")
+    input("Pulse <Enter> para continuar")
 
-
-
-    
-
-def informacion_liquidacion() -> None:
+def mostrar_menu_informacion_liquidacion() -> None:
     """Pide seleccionar una liquidación y muestra su información"""
+    limpiar_pantalla()
+    Liquidaciones.listar_liquidaciones()
     liquidacion = Liquidaciones.seleccionar_liquidacion()
     if liquidacion == "":
         return
@@ -80,4 +94,5 @@ def informacion_liquidacion() -> None:
         print(f"  Poliza: {siniestro[0]}, Siniestro: {siniestro[1]}")
     print(f"Importe liquidación:")
     print(f"  A cobrar {liquidacion['importe_liquidacion'][0]} €")
-    print(f"  A pagar {liquidacion['importe_liquidacion'][1]} €")    
+    print(f"  A pagar {liquidacion['importe_liquidacion'][1]} €")
+    input("Pulse <Enter> para continuar")

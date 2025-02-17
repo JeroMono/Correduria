@@ -4,7 +4,7 @@ import Siniestros
 import Utilidades
 import json
 
-def menu_polizas()-> None:
+def mostrar_menu_polizas()-> None:
     """Menú bucle de pólizas. Permite crear, modificar y eliminar pólizas."""
     global listaPolizas
     opcion_polizas = "0"
@@ -17,18 +17,18 @@ def menu_polizas()-> None:
         opcion_polizas = input("Introduce una opción: ")
         match opcion_polizas:
             case "1":
-                crear_poliza()
+                mostrar_menu_crear_poliza()
             case "2":
-                modificar_poliza()
+                mostrar_menu_modificar_poliza()
             case "3":
-                eliminar_poliza_menu()
+                mostrar_menu_eliminar_poliza()
             case "9":
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
     
 
-def crear_poliza()-> None:
+def mostrar_menu_crear_poliza()-> None:
     """Crea una póliza. Pide al usuario los datos necesarios y los guarda en el archivo polizas.json."""
     global listaPolizas, ultima_poliza
     Utilidades.limpiar_pantalla()
@@ -37,26 +37,31 @@ def crear_poliza()-> None:
     nro_poliza = generar_nro_poliza()
     print(f"El número de póliza es: {nro_poliza}")
 
-    id_tomador = buscar_tomador()
+    id_tomador = seleccionar_tomador()
     if id_tomador == "":
         return
     
-    datos_vehiculo = datosVehiculo()
+    datos_vehiculo = configurar_datos_vehiculo()
     if datos_vehiculo == ():
         return
     
-    cobertura = configurarCobertura()
+    matricula = datos_vehiculo[0]
+    datos_vehiculo = datos_vehiculo[1:]
+    
+    cobertura = configurar_cobertura()
 
-    id_conductor = configurarConductor(datos_vehiculo[1])
+    id_conductor = configurar_conductor(datos_vehiculo[1])
 
-    # Dejamos la póliza en estado de pendiente de cobro al crearla, se cambia al poner un recibo cobrado
+    # Dejamos la póliza en estado de pendiente de cobro al crearla, se cambia al poner un recibo cobrado vigente
     estado_poliza = "PteCobro"
 
-    fecha_emision = configurarFecha()
-    forma_pago = configurarPago()
-    
-    poliza = {"nro_poliza":nro_poliza, "id_tomador":id_tomador, "datos_vehiculo":datos_vehiculo, "cobertura":cobertura, "id_conductor":id_conductor, "estado_poliza":estado_poliza, "fecha_emision":fecha_emision, "forma_pago":forma_pago}
+    fecha_emision = configurar_fecha_emision()
 
+    forma_pago = configurar_pago()
+    
+    poliza = {"nro_poliza":nro_poliza, "id_tomador":id_tomador, "matricula":matricula, "datos_vehiculo":datos_vehiculo, "cobertura":cobertura, "id_conductor":id_conductor, "estado_poliza":estado_poliza, "fecha_emision":fecha_emision, "forma_pago":forma_pago}
+
+    # Confirmación de la creación de la póliza
     while True:
         listar_poliza(poliza, True)
         confirmacion = input("¿Desea guardar la póliza? (s/n): ").lower()
@@ -71,7 +76,7 @@ def crear_poliza()-> None:
             break
 
 
-def modificar_poliza()-> None:
+def mostrar_menu_modificar_poliza()-> None:
     """Modifica una póliza. Pide al usuario el número de póliza a modificar y los datos a modificar."""
     global listaPolizas
     Utilidades.limpiar_pantalla()
@@ -81,29 +86,32 @@ def modificar_poliza()-> None:
     if poliza_edicion == "":
         return
 
+    # Bucle de modificación de la póliza
     while True:
         listar_poliza(poliza_edicion)
         modificar_opcion = input("Introduce el número de la opción a modificar: ")
         match modificar_opcion:
             case "1":
-                tomador = buscar_tomador()
+                tomador = seleccionar_tomador()
                 poliza_edicion["id_tomador"] = tomador if tomador != "!salir" else poliza_edicion["id_tomador"]
                 del tomador
             case "2":
-                datos = datosVehiculo()
+                datos = configurar_datos_vehiculo(poliza_edicion["id_conductor"])
                 if datos == ():
                     continue
-                poliza_edicion["datos_vehiculo"] = datos
+                poliza_edicion["matricula"] = datos[0]
+                poliza_edicion["datos_vehiculo"] = datos[1:]
+
             case "3":
-                poliza_edicion["cobertura"] = configurarCobertura()
+                poliza_edicion["cobertura"] = configurar_cobertura()
             case "4":
-                poliza_edicion["id_conductor"] = configurarConductor(poliza_edicion["datos_vehiculo"][1])
+                poliza_edicion["id_conductor"] = configurar_conductor(poliza_edicion)
             case "5":
                 poliza_edicion["estado_poliza"] = configurarEstado()
             case "6":
-                poliza_edicion["fecha_emision"] = configurarFecha()
+                poliza_edicion["fecha_emision"] = configurar_fecha_emision()
             case "7":
-                poliza_edicion["forma_pago"] = configurarPago()
+                poliza_edicion["forma_pago"] = configurar_pago()
             case "9":
                 print("Volviendo al menú Polizas")
                 break
@@ -111,8 +119,7 @@ def modificar_poliza()-> None:
                 print("Opción incorrecta")
         guardar_polizas()
 
-
-def eliminar_poliza_menu()-> None:
+def mostrar_menu_eliminar_poliza()-> None:
     """Entra en el menú de eliminar Poliza, elegida una elimina una póliza si ésta no está vigente, es decir si está de baja.
     También elimina los recibos y siniestros asociados a la póliza en caso de efectuar la eliminación."""
     Utilidades.limpiar_pantalla()
@@ -123,7 +130,7 @@ def eliminar_poliza_menu()-> None:
 
     if comprobar_vigencia(poliza_elegida):
         print("La póliza está vigente, no se puede eliminar")
-        input("Pulse enter para continuar")
+        input("Pulse <Enter> para continuar")
         return
         
     confirmacion = input("¿Está seguro de que desea eliminar la póliza? (s/n): ").lower()
@@ -132,18 +139,16 @@ def eliminar_poliza_menu()-> None:
     
     eliminar_poliza(poliza_elegida)
     print("Póliza eliminada")
-    input("Pulse enter para continuar")
+    input("Pulse <Enter> para continuar")
 
 
 def listar_polizas()-> None:
     """Muestra todas las pólizas guardadas en el archivo polizas.json. Muestra el número de póliza, el tomador y el vehículo."""
-    print(f"{'Nro Póliza':<13}{'Tomador':<10}{'Vigencia':<10}{'    Datos Vehículo':<40}")
+    print(f"{'Nro Póliza':<13}{'Tomador':<10}{'Vigencia':<11}{'Matricula':<10}")
     print("=" * 90)
     for poliza in listaPolizas:
-        print(f"{poliza['nro_poliza']:<13}{poliza['id_tomador']:<10}{'Vigente' if comprobar_vigencia(poliza) else 'No Vigente':<10}", end="")
-        for dato in poliza["datos_vehiculo"]:
-            print(f"|{dato:<12}", end="")
-        print("|")
+        print(f"{poliza['nro_poliza']:<13}{poliza['id_tomador']:<10}{'Vigente' if comprobar_vigencia(poliza) else 'No Vigente':<11}{poliza['matricula']:<10}")
+
 
 def listar_poliza(poliza:dict, creando:bool = False)-> None:
     """Muestra los datos de una póliza dada. Con la infromación completa."""
@@ -151,12 +156,26 @@ def listar_poliza(poliza:dict, creando:bool = False)-> None:
 
     print(f"Nro Póliza: {poliza['nro_poliza']}")
     print(f"1. Tomador: {poliza['id_tomador']}")
-    print(f"2. Vehículo: {poliza['datos_vehiculo'][0]}, {poliza['datos_vehiculo'][1]}, {poliza['datos_vehiculo'][2]}, {poliza['datos_vehiculo'][3]}, {poliza['datos_vehiculo'][4]}")
-    print(f"3. Cobertura: {poliza['cobertura']}")
+    print(f"2. Vehículo: {poliza['matricula']}, {poliza['datos_vehiculo'][0]}, {poliza['datos_vehiculo'][1]}, {poliza['datos_vehiculo'][2]}, {poliza['datos_vehiculo'][3]}")
+    print(f"3. Cobertura: ", end="")
+    if type(poliza['cobertura']) == str:
+        print(poliza['cobertura'])
+    elif type(poliza['cobertura']) == tuple:
+        if type(poliza['cobertura'][1]) == tuple:
+            print(f"{poliza['cobertura'][0]}, {poliza['cobertura'][1][0]} con franquicia de {poliza['cobertura'][1][1]}")
+        else:
+            for cobertura in poliza['cobertura'][:-1]:
+                print(cobertura, end=" ")
+            print(poliza['cobertura'][-1])
+
     print(f"4. Conductor: {poliza['id_conductor'][0]}, {poliza['id_conductor'][1]}, {poliza['id_conductor'][2]}, {poliza['id_conductor'][3]}")
     print(f"5. Estado: {poliza['estado_poliza']}")
     print(f"6. Fecha emisión: {poliza['fecha_emision']}")
-    print(f"7. Forma de pago: {poliza['forma_pago']}")
+    if len(poliza['forma_pago']) == 2:
+        print(f"7. Forma de pago: {poliza['forma_pago'][0]}")
+        print(f"   IBAN: {poliza['forma_pago'][1]}")
+    else:
+        print(f"7. Forma de pago: {poliza['forma_pago']}")
     if not creando:
         print("9. Volver atrás")
 
@@ -197,7 +216,12 @@ def cargar_polizas() -> None:
             lista_polizas = data["polizas"]
             for poliza in lista_polizas:
                 datos_vehiculo = tuple(poliza["datos_vehiculo"])
-                cobertura = tuple(poliza["cobertura"])
+                if poliza["cobertura"]=="RC":
+                    cobertura = "RC" 
+                else:
+                    cobertura = tuple(poliza["cobertura"])
+                    if type(cobertura[1]) == list:
+                        cobertura = (cobertura[0], tuple(cobertura[1]))
                 id_conductor = tuple(poliza["id_conductor"])
                 poliza["datos_vehiculo"] = datos_vehiculo
                 poliza["cobertura"] = cobertura
@@ -208,6 +232,7 @@ def cargar_polizas() -> None:
                     poliza["forma_pago"] = poliza["forma_pago"]
                 listaPolizas.append(poliza)
             del lista_polizas
+            print(f"{len(listaPolizas)} Polizas cargadas correctamente")
     except:
         print("No se han encontrado pólizas guardadas")
         ultima_poliza = 0
@@ -221,7 +246,7 @@ def guardar_polizas() -> None:
     except:
         print(f"Error al guardar las pólizas")
 
-def buscar_tomador()-> str:
+def seleccionar_tomador()-> str:
     """Busca un tomador en la lista de tomadores. Devuelve el DNI, NIE o CIF del tomador si existe, se puede utilizar '' para cancelar la operación."""
     while True:
         tomador_id = input("Introduce el DNI, NIE o CIF del tomador: ").upper()
@@ -239,7 +264,7 @@ def buscar_tomador()-> str:
             tomador_id = ""
             continue
 
-def datosVehiculo()-> tuple:
+def configurar_datos_vehiculo(conductor_modificando:tuple = ())-> tuple:
     """Pide al usuario los datos del vehículo y los devuelve en una tupla."""    
     while True:
         tipos = {"1": "Ciclomotor", "2": "Moto", "3": "Turismo", "4": "Furgoneta", "5": "Camión"}
@@ -247,8 +272,19 @@ def datosVehiculo()-> tuple:
             print(f"{numero}. {tipo}")
         entrada = input("Introduce el tipo de vehículo(): ")
         if entrada in ["1", "2", "3", "4", "5"]:
-            tipo = tipos[entrada]
-            break
+            if not conductor_modificando:
+                tipo = tipos[entrada]
+                break
+            else:
+                if Utilidades.validar_carnet_conducir(conductor_modificando[2], tipos[entrada]):
+                    tipo = tipos[entrada]
+                    break
+                else:
+                    print("El carnet no es válido para el tipo de vehículo")
+                    confirmacion = input("¿Desea cancelar la poliza? (s/n): ").lower()
+                    if confirmacion == "s":
+                        return ()
+
 
     while True:
         matricula = input("Introduce la matrícula del vehículo: ")
@@ -296,7 +332,7 @@ def datosVehiculo()-> tuple:
             return matricula, tipo, marca, modelo, funcionamiento
 
 
-def configurarCobertura()-> tuple:
+def configurar_cobertura()-> tuple:
     """Configura las coberturas de la póliza. Devuelve una tupla con las coberturas seleccionadas.
     Si se selecciona la cobertura de todo riesgo, se pedirá el valor de la franquicia.
     Valores: RC: Responsabilidad Civil, RL: Rotura de lunas, INC: Incendio, RB: Robo, TR: Todo Riesgo"""
@@ -331,11 +367,13 @@ def configurarCobertura()-> tuple:
                 break
             return cobertura
         elif entrada == "9":
+            if cobertura == ["RC"]:
+                cobertura = "RC"
             break
     
     return tuple(cobertura)
 
-def configurarConductor(tipo:str)-> tuple:
+def configurar_conductor(poliza_edicion:dict)-> tuple:
     """Configura el conductor de la póliza. Pide al usuario los datos del conductor y los devuelve en una tupla.
     Los datos son el DNI o NIE del conductor, la fecha de nacimiento, el tipo de carnet de conducir y la fecha de expedición del carnet.
     Valores de tipo: Ciclomotor, Moto, Turismo, Furgoneta, Camión
@@ -343,6 +381,9 @@ def configurarConductor(tipo:str)-> tuple:
     El tipo de carnet de conducir debe ser válido para el tipo de vehículo. Puede tener varios carnets separados por comas o espacios."""
     while True:
         id = input("Introduce el DNI o NIE del conductor: ").upper()
+        if id == "" and poliza_edicion:
+            id = poliza_edicion["id_conductor"][0]
+            break
         if Utilidades.comprobar_dni(id)[0]:
             if Utilidades.comprobar_dni(id)[0]:
                 break
@@ -356,6 +397,9 @@ def configurarConductor(tipo:str)-> tuple:
     
     while True:
         fecha_nacimiento = input("Introduce la fecha de nacimiento del conductor dd/mm/aaaa: ")
+        if fecha_nacimiento == "" and poliza_edicion:
+            fecha_nacimiento = poliza_edicion["id_conductor"][1]
+            break
         fecha_nacimiento = Utilidades.validar_fecha(fecha_nacimiento)
         if fecha_nacimiento:
             break
@@ -363,6 +407,10 @@ def configurarConductor(tipo:str)-> tuple:
     while True:
         print("Los tipos de carnet válidos son: AM, A1, A2, A, B, B+E, C1, C1+E, C, C+E")
         tipo_carnet = input("Introduce el tipo de carnet del conductor (Separado por comas o espacios p.e.: B+E, AM): ")
+        if tipo_carnet == "" and poliza_edicion:
+            tipo_carnet = poliza_edicion["id_conductor"][2]
+            break
+        tipo = poliza_edicion["datos_vehiculo"][1]
         if Utilidades.validar_carnet_conducir(tipo_carnet, tipo):
             break
         else:
@@ -373,6 +421,9 @@ def configurarConductor(tipo:str)-> tuple:
     
     while True:
         fecha_carnet = input("Introduce la fecha de expedición del carnet dd/mm/aaaa: ")
+        if fecha_carnet == "" and poliza_edicion:
+            fecha_carnet = poliza_edicion["id_conductor"][3]
+            break
         fecha_carnet = Utilidades.validar_fecha(fecha_carnet)
         if fecha_carnet:
             break
@@ -398,7 +449,7 @@ def configurarEstado()-> str:
                 estado_poliza = "Baja"
             return estado_poliza
 
-def configurarFecha()-> str:
+def configurar_fecha_emision()-> str:
     """Configura la fecha de emisión de la póliza. Devuelve la fecha en formato dd/mm/aaaa."""
     while True:
         fecha_emision = input("Introduce la fecha de emisión de la póliza dd/mm/aaaa: ")
@@ -406,7 +457,7 @@ def configurarFecha()-> str:
         if fecha_emision:
             return fecha_emision
 
-def configurarPago()-> str:
+def configurar_pago()-> str:
     """Configura la forma de pago de la póliza: Efectivo o Transferencia Bancaria. Devuelve la forma de pago y el IBAN si es por banco."""
     while True:
         forma_pago = input('Introduce la forma de pago de la póliza [(E)fectivo o (B)anco]: ').upper()
@@ -439,53 +490,37 @@ def comprobar_vigencia(poliza:dict, recibo_omitido:dict = {})-> bool:
     # Compobramos el ultimo recibo y verificamos que esté en fecha según la duración del pago
     if poliza["estado_poliza"] == "Baja":
         return False
-    ultimo_recibo_fecha = [00,00,0000]
-    ultimo_recibo = ''
+    ultimo_recibo_fecha = [1900,1,1]
+    ultimo_recibo = None
 
     # Buscamos el último recibo cobrado
     for recibo in Recibos.listaRecibos:
-        if recibo["nro_poliza"] == poliza["nro_poliza"] and recibo != recibo_omitido and recibo['estado_recibo'] == "Cobrado":
-            fecha_recibo = list(map(int,recibo["fecha_inicio"].split("/")))
-            if ultimo_recibo_fecha[2] <= int(fecha_recibo[2]):
-                if ultimo_recibo_fecha[2] <= int(fecha_recibo[2]):
-                    if ultimo_recibo_fecha[1] <= int(fecha_recibo[1]):
-                        ultimo_recibo_fecha = fecha_recibo
-                        ultimo_recibo = recibo
-    if ultimo_recibo_fecha == [00,00,0000]:
+        if recibo["nro_poliza"] == poliza["nro_poliza"] and recibo != recibo_omitido and recibo['estado_recibo'] in ["Cobrado","Cobrado_Banco"]:
+            fecha_recibo = list(map(int,recibo["fecha_inicio"].split("/")))[::-1]
+            if ultimo_recibo_fecha < fecha_recibo:
+                ultimo_recibo_fecha = fecha_recibo
+                ultimo_recibo = recibo
+    if ultimo_recibo_fecha == [1900,1,1]:
         return False
     duracion = ultimo_recibo["duracion"]
-    dia_recibo = ultimo_recibo_fecha[0]
+    dia_recibo = ultimo_recibo_fecha[2]
     mes_recibo = ultimo_recibo_fecha[1]
-    año_recibo = ultimo_recibo_fecha[2]
+    año_recibo = ultimo_recibo_fecha[0]
 
+    valores_duracion = {"Anual": 12, "Semestral": 6, "Trimestral": 3, "Mensual": 1}
     # Al último recibo le sumamos la duracion y comprobamos si queda en fecha
-    if duracion == "Anual":
-        ultimo_recibo_fecha = [dia_recibo, mes_recibo, año_recibo + 1]
-    elif duracion == "Semestral":
-        mes, resto = divmod(mes_recibo + 6, 12)
-        año = año_recibo + resto
-        ultimo_recibo_fecha = [dia_recibo, mes, año]
-    elif duracion == "Trimestral":
-        mes, resto = divmod(mes_recibo + 3, 12)
-        año = año_recibo + resto
-        ultimo_recibo_fecha = [dia_recibo, mes, año]
-    elif duracion == "Mensual":
-        mes, resto = divmod(mes_recibo + 1, 12)
-        año = año_recibo + resto
-        ultimo_recibo_fecha = [dia_recibo, mes, año]
+
+    valor_duracion = valores_duracion[duracion]
+    mes = (mes_recibo + valor_duracion ) % 12
+    año = año_recibo + ((mes_recibo + valor_duracion - 1) // 12)
+    ultimo_recibo_fecha = [año, mes if mes != 0 else 12, dia_recibo]
 
     fecha_actual = Utilidades.fecha_actual()
     fecha_actual = list(map(int,fecha_actual.split("/")))
 
     # Ahora sí podemos comparar la fecha actual con la fecha del último recibo más el plazo de vigencia
-    if fecha_actual[2] > ultimo_recibo_fecha[2]:
+    if fecha_actual > ultimo_recibo_fecha:
         return False
-    elif fecha_actual[2] <= ultimo_recibo_fecha[2]:
-        if fecha_actual[1] > ultimo_recibo_fecha[1]:
-            return False
-        elif fecha_actual[1] <= ultimo_recibo_fecha[1]:
-            if fecha_actual[0] > ultimo_recibo_fecha[0]:
-                return False
     return True
 
 
@@ -519,5 +554,15 @@ def eliminar_poliza(poliza_eliminacion:dict)-> None:
     Recibos.guardar_recibos()
     Siniestros.guardar_siniestros()
 
+def actualizar_vigencia()-> None:
+    """Comprueba que las polizas cobradas al momento de iniciar el programa estén vigentes, si están cobradas pero ya no hay recibos vigentes las cambia a pendientes de cobro."""
+    global listaPolizas
+    print("Comprobando vigencia de las pólizas a día de hoy")
+    for poliza in listaPolizas:
+        if not comprobar_vigencia(poliza):
+            if poliza["estado_poliza"] == "Cobrada":
+                poliza["estado_poliza"] = "PteCobro"
+                print(f"La póliza {poliza['nro_poliza']} ha pasado a estar pendiente de cobro")
+    guardar_polizas()
 
 listaPolizas = list()

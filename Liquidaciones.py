@@ -3,7 +3,7 @@ import Recibos
 import Siniestros
 import json
 
-def menu_liquidaciones() -> None:
+def mostrar_menu_liquidaciones() -> None:
     """Menú de liquidaciones, permite crear, modificar y cerrar liquidaciones"""
     opcion_liquidaciones = "0"
     while (opcion_liquidaciones != "9"):
@@ -15,17 +15,17 @@ def menu_liquidaciones() -> None:
         opcion_liquidaciones = input("Introduce una opción: ")
         match opcion_liquidaciones:
             case "1":
-                crear_liquidacion()
+                mostrar_menu_crear_liquidacion()
             case "2":
-                modificar_liquidacion()
+                mostrar_menu_modificar_liquidacion()
             case "3":
-                cerrar_liquidacion()
+                mostrar_menu_cerrar_liquidacion()
             case "9":
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
 
-def crear_liquidacion() -> None:
+def mostrar_menu_crear_liquidacion() -> None:
     """Entra en el menu de creación de liquidaciones, solicita los datos necesarios y crea una liquidación"""
     global listaLiquidaciones
     Utilidades.limpiar_pantalla()
@@ -34,7 +34,7 @@ def crear_liquidacion() -> None:
     for liquidacion in listaLiquidaciones:
         if liquidacion["estado_liquidacion"] == "Abierta":
             print("Ya hay una liquidación abierta, cierre la liquidación antes de crear una nueva")
-            input("Pulse Enter para continuar")
+            input("Pulse <Enter> para continuar")
             return
     print("Creando liquidación")
 
@@ -54,9 +54,10 @@ def crear_liquidacion() -> None:
 
     listaLiquidaciones.append({"nro_liquidacion":nro_liquidacion, "fecha_liquidacion":fecha_liquidacion, "estado_liquidacion":estado_liquidacion, "importe_recibos_cobrados":importe_recibos_cobrados, "lista_recibos_liquidar":lista_recibos_liquidar, "importe_recibos_baja":importe_recibos_baja, "lista_recibos_baja":lista_recibos_baja, "importe_siniestros_pagados":importe_siniestros_pagados, "lista_siniestros_liquidados":lista_siniestros_liquidados, "importe_liquidacion":importe_liquidacion})
     guardar_liquidaciones()
+    input("Liquidación creada, pulse <Enter> para continuar")
 
 
-def modificar_liquidacion() -> None:
+def mostrar_menu_modificar_liquidacion() -> None:
     """Modifica una liquidación existente, permite cambiar la fecha de la liquidación y recalcula los importes de la liquidación"""
     global listaLiquidaciones
     Utilidades.limpiar_pantalla()
@@ -95,8 +96,9 @@ def modificar_liquidacion() -> None:
     liquidacion_modificar["importe_liquidacion"] = importe_liquidacion
 
     guardar_liquidaciones()
+    input("Liquidación modificada, pulse <Enter> para continuar")
 
-def cerrar_liquidacion() -> None:
+def mostrar_menu_cerrar_liquidacion() -> None:
     """Cierra una liquidación y liquida los recibos y siniestros pendientes"""
     global listaLiquidaciones
     Utilidades.limpiar_pantalla()
@@ -109,26 +111,34 @@ def cerrar_liquidacion() -> None:
     if liquidacion_cerrar["estado_liquidacion"] == "Cerrada":
         print("La liquidación ya está cerrada")
         return
+
     
+    
+    recibos_a_liquidar = []
+    for datos_liquidacion in liquidacion_cerrar["lista_recibos_liquidar"]:
+        recibos_a_liquidar.append(datos_liquidacion[1])
+
+    for datos_baja in liquidacion_cerrar["lista_recibos_baja"]:
+        recibos_a_liquidar.append(datos_baja[1])
+
+    for recibo in Recibos.listaRecibos:
+        if recibo["id_recibo"] in recibos_a_liquidar:
+            if recibo["estado_liquidacion"] == "Pendiente":
+                recibo["estado_liquidacion"] = "Liquidado"
+                recibo["fecha_liquidacion"] = liquidacion_cerrar["fecha_liquidacion"]
+                print("Liquidado recibo", recibo["id_recibo"])
+        
+    for siniestro in Siniestros.listaSiniestros:
+        if siniestro["nro_siniestro"] in [siniestro[1] for siniestro in liquidacion_cerrar["lista_siniestros_liquidados"]]:
+            if siniestro["estado_liquidacion"] == "Pendiente":
+                siniestro["estado_liquidacion"] = "Liquidado"
+                siniestro["fecha_liquidacion"] = liquidacion_cerrar["fecha_liquidacion"]
+                print("Liquidado siniestro", siniestro["nr_siniestro"])
+
+
     liquidacion_cerrar["estado_liquidacion"] = "Cerrada"
 
-    for recibos in liquidacion_cerrar["lista_recibos_liquidar"]:
-        if recibos["estado_liquidacion"] == "Pendiente":
-            recibos["estado_liquidacion"] = "Liquidado"
-            recibos["fecha_liquidacion"] = liquidacion_cerrar["fecha_liquidacion"]
-            print("Liquidado recibo", recibos["id_recibo"])
-    
-    for recibos in liquidacion_cerrar["lista_recibos_baja"]:
-        if recibos["estado_liquidacion"] == "Pendiente":
-            recibos["estado_liquidacion"] = "Liquidado"
-            recibos["fecha_liquidacion"] = liquidacion_cerrar["fecha_liquidacion"]
-            print("Liquidado recibo", recibos["id_recibo"])
-
-    for siniestros in liquidacion_cerrar["lista_siniestros_liquidados"]:
-        if siniestros["estado_liquidacion"] == "Pendiente":
-            siniestros["estado_liquidacion"] = "Liquidado"
-            siniestros["fecha_liquidacion"] = liquidacion_cerrar["fecha_liquidacion"]
-            print("Liquidado siniestro", siniestros["nro_siniestro"])
+    input("Liquidación cerrada, pulse <Enter> para continuar")
     guardar_liquidaciones()
     Recibos.guardar_recibos()
     Siniestros.guardar_siniestros()
@@ -217,6 +227,9 @@ def cargar_liquidaciones() -> None:
                 liquidacion["lista_siniestros_liquidados"] = tuple(liquidacion["lista_siniestros_liquidados"])
                 liquidacion["importe_liquidacion"] = tuple(liquidacion["importe_liquidacion"])
             listaLiquidaciones = lista_liquidaciones
+            del lista_liquidaciones
+            print(f"{len(listaLiquidaciones)} Liquidaciones cargadas correctamente")
+
     except:
         print("No se ha encontrado el archivo Liquidaciones.json")
     
@@ -260,60 +273,39 @@ def calcular_recibos_cobrados(fecha_liquidacion:str) -> tuple:
     """Calcula el importe de los recibos cobrados hasta la fecha de liquidación y los devuelve con la lista de los recibos a liquidar"""
     importe_recibos_cobrados = 0.0
     lista_recibos_liquidar = []
-    fecha_liquidacion = fecha_liquidacion.split("/")
+    fecha_liquidacion = fecha_liquidacion.split("/")[::-1]
     for recibo in Recibos.listaRecibos:
         if (recibo["estado_recibo"] in ["Cobrado", "Cobrado_Banco"]) and recibo["estado_liquidacion"] == "Pendiente":
-            fecha_cobro = recibo["fecha_cobro"].split("/")
-            if fecha_cobro[2] > fecha_liquidacion[2]:
-                continue
-            if fecha_cobro[2] == fecha_liquidacion[2]:
-                if fecha_cobro[1]> fecha_liquidacion[1]:
-                    continue
-                if fecha_cobro[1]== fecha_liquidacion[1]:
-                    if fecha_cobro[0]> fecha_liquidacion[0]:
-                        continue
-            importe_recibos_cobrados += recibo["importe_cobrar"]
-            lista_recibos_liquidar.append((recibo["nro_poliza"],recibo["id_recibo"]))
+            fecha_cobro = recibo["fecha_cobro"].split("/")[::-1]
+            if fecha_cobro < fecha_liquidacion:
+                importe_recibos_cobrados += recibo["importe_cobrar"]
+                lista_recibos_liquidar.append((recibo["nro_poliza"],recibo["id_recibo"]))
     return importe_recibos_cobrados, lista_recibos_liquidar
 
 def calcular_recibos_baja(fecha_liquidacion:str) -> tuple:
     """Calcula el importe de los recibos dados de baja hasta la fecha de liquidación y los devuelve con la lista de los recibos a liquidar"""
     importe_recibos_baja = 0.0
     lista_recibos_baja = []
-    fecha_liquidacion = fecha_liquidacion.split("/")
+    fecha_liquidacion = fecha_liquidacion.split("/")[::-1]
     for recibo in Recibos.listaRecibos:
         if recibo["estado_recibo"] == "Baja" and recibo["estado_liquidacion"] == "Pendiente":
-            fecha_cobro = recibo["fecha_cobro"].split("/")
-            if fecha_cobro[2] > fecha_liquidacion[2]:
-                continue
-            if fecha_cobro[2] == fecha_liquidacion[2]:
-                if fecha_cobro[1]> fecha_liquidacion[1]:
-                    continue
-                if fecha_cobro[1]== fecha_liquidacion[1]:
-                    if fecha_cobro[0]> fecha_liquidacion[0]:
-                        continue
-            importe_recibos_baja += recibo["importe_cobrar"]
-            lista_recibos_baja.append((recibo["nro_poliza"],recibo["id_recibo"]))
+            fecha_cobro = recibo["fecha_cobro"].split("/")[::-1]
+            if fecha_cobro < fecha_liquidacion:
+                importe_recibos_baja += recibo["importe_cobrar"]
+                lista_recibos_baja.append((recibo["nro_poliza"],recibo["id_recibo"]))
     return importe_recibos_baja, lista_recibos_baja
 
 def calcular_siniestros_pagados(fecha_liquidacion:str) -> tuple:
     """Calcula el importe de los siniestros pagados hasta la fecha de liquidación y los devuelve con la lista de los siniestros a liquidar"""
     importe_siniestros_pagados = 0.0
     lista_siniestros_liquidados = []
-    fecha_liquidacion = fecha_liquidacion.split("/")
+    fecha_liquidacion = fecha_liquidacion.split("/")[::-1]
     for siniestro in Siniestros.listaSiniestros:
         if siniestro["estado_siniestro"] == "Pagado" and siniestro["estado_liquidacion"] == "Pendiente":
-            fecha_abono = siniestro["fecha_abono"].split("/")
-            if fecha_abono[2] > fecha_liquidacion[2]:
-                continue
-            if fecha_abono[2] == fecha_liquidacion[2]:
-                if fecha_abono[1]> fecha_liquidacion[1]:
-                    continue
-                if fecha_abono[1]== fecha_liquidacion[1]:
-                    if fecha_abono[0]> fecha_liquidacion[0]:
-                        continue
-            importe_siniestros_pagados += siniestro["importe_pagar"]
-            lista_siniestros_liquidados.append((siniestro["nro_poliza"],siniestro["nro_siniestro"]))
+            fecha_abono = siniestro["fecha_abono"].split("/")[::-1]
+            if fecha_abono < fecha_liquidacion:
+                importe_siniestros_pagados += siniestro["importe_pagar"]
+                lista_siniestros_liquidados.append((siniestro["nro_poliza"],siniestro["nro_siniestro"]))
     return importe_siniestros_pagados, lista_siniestros_liquidados
 
 listaLiquidaciones = []

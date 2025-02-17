@@ -16,9 +16,29 @@
     },
     {
         "nro_liquidacion": "2025-000000",
-        "fecha_liquidacion": "25/01/2025",
+        "fecha_liquidacion": "31/12/2023",
+        "estado_liquidacion": "Cerrada",
+        "importe_recibos_cobrados": 250.0,
+        "lista_recibos_liquidar": [
+            [
+                "000000000000",
+                "000000000004"
+            ]
+        ],
+        "importe_recibos_baja": 0.0,
+        "lista_recibos_baja": [],
+        "importe_siniestros_pagados": 0.0,
+        "lista_siniestros_liquidados": [],
+        "importe_liquidacion": [
+            250.0,
+            0.0
+        ]
+    },
+    {
+        "nro_liquidacion": "2025-000001",
+        "fecha_liquidacion": "12/02/2025",
         "estado_liquidacion": "Abierta",
-        "importe_recibos_cobrados": 515.0,
+        "importe_recibos_cobrados": 765.0,
         "lista_recibos_liquidar": [
             [
                 "000000000002",
@@ -27,6 +47,10 @@
             [
                 "000000000003",
                 "000000000002"
+            ],
+            [
+                "000000000000",
+                "000000000007"
             ]
         ],
         "importe_recibos_baja": 0.0,
@@ -34,7 +58,7 @@
         "importe_siniestros_pagados": 0.0,
         "lista_siniestros_liquidados": [],
         "importe_liquidacion": [
-            515.0,
+            765.0,
             0.0
         ]
     }

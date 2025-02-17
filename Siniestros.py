@@ -2,7 +2,7 @@ import Polizas
 import Utilidades
 import json
 
-def menu_siniestros() -> None:
+def mostrar_menu_siniestros() -> None:
     """Menu de siniestros, permite crear, modificar o eliminar un siniestro"""
     opcion_siniestros = "0"
     while (opcion_siniestros != "9"):
@@ -14,17 +14,17 @@ def menu_siniestros() -> None:
         opcion_siniestros = input("Introduce una opción: ")
         match opcion_siniestros:
             case "1":
-                crear_siniestro()
+                mostrar_menu_crear_siniestro()
             case "2":
-                modificar_siniestro()
+                mostrar_menu_modificar_siniestro()
             case "3":
-                eliminar_siniestro()
+                mostrar_menu_eliminar_siniestro()
             case "9":
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
 
-def crear_siniestro() -> None:
+def mostrar_menu_crear_siniestro() -> None:
     """Pide los datos para un nuevo siniestro y lo añade a la lista de siniestros"""
     global listaSiniestros
     print("Creando siniestro")
@@ -56,7 +56,7 @@ def crear_siniestro() -> None:
             listaSiniestros.append(siniestro)
             ultimos_siniestros[fecha_siniestro.split("/")[2]] = int(nro_siniestro.split("-")[1])
             guardar_siniestros()
-            input("Siniestro creado. Enter para continuar")
+            input("Siniestro creado. <Enter> para continuar")
             break
         elif confirmacion == "n":
             print("Siniestro no creado")
@@ -64,7 +64,7 @@ def crear_siniestro() -> None:
 
 
 
-def modificar_siniestro() -> None:
+def mostrar_menu_modificar_siniestro() -> None:
     """Selecciona un siniestro valido, y entra en un menú"""
     global listaSiniestros
     Utilidades.limpiar_pantalla()
@@ -103,7 +103,7 @@ def modificar_siniestro() -> None:
                 print("Opción incorrecta")
     guardar_siniestros()
 
-def eliminar_siniestro() -> None:
+def mostrar_menu_eliminar_siniestro() -> None:
     """Selecciona un siniestro valido y lo elimina de la lista de siniestros si es posible"""
     global listaSiniestros
     listar_siniestros()
@@ -212,6 +212,7 @@ def cargar_siniestros() -> None:
             datos = json.load(archivo_siniestros)
             ultimos_siniestros = datos["ultimos_siniestros"]
             listaSiniestros = datos["listaSiniestros"]
+            print(f"{len(listaSiniestros)} Siniestros cargados correctamente")
     except:
         print("No existen datos de siniestros")
         ultimos_siniestros = {}
@@ -262,7 +263,7 @@ def configurar_poliza_siniestro() -> str:
                 if Polizas.comprobar_vigencia(poliza):
                     return nro_poliza
                 else:
-                    print("La póliza no está activa")
+                    print("La póliza no está vigente")
                     confirmacion = input("¿Quieres introducir otro número de póliza? (s/n): ").upper()
                     if confirmacion == "N":
                         return ""

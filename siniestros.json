@@ -1,6 +1,6 @@
 {
     "ultimos_siniestros": {
-        "2024": 0
+        "2024": 1
     },
     "listaSiniestros": [
         {
@@ -26,6 +26,19 @@
             "importe_pagar": 215.0,
             "estado_siniestro": "Confirmado",
             "fecha_abono": "3/6/2024",
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "nro_siniestro": "2024-000001",
+            "nro_poliza": "000000000000",
+            "descripcion": "Accidente Aparatoso",
+            "matricula_contrario": "2514fvd",
+            "compañia_contrario": "Ocaso",
+            "nro_poliza_contrario": "212",
+            "importe_pagar": 215.0,
+            "estado_siniestro": "Confirmado",
+            "fecha_abono": "12/1/2025",
             "estado_liquidacion": "Pendiente",
             "fecha_liquidacion": ""
         }

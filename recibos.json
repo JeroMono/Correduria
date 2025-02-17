@@ -1,10 +1,10 @@
 {
-    "ultimo_recibo": "000000000002",
+    "ultimo_recibo": 7,
     "recibos": [
         {
             "id_recibo": "000000000000",
             "nro_poliza": "000000000000",
-            "fecha_inicio": "12/2/2024",
+            "fecha_inicio": "12/2/2023",
             "duracion": "Semestral",
             "importe_cobrar": 250.0,
             "fecha_cobro": "20/2/2024",
@@ -16,7 +16,7 @@
         {
             "id_recibo": "000000000001",
             "nro_poliza": "000000000002",
-            "fecha_inicio": "25/11/2024",
+            "fecha_inicio": "25/11/2023",
             "duracion": "Anual",
             "importe_cobrar": 250.0,
             "fecha_cobro": "30/11/2024",
@@ -34,6 +34,30 @@
             "fecha_cobro": "30/12/2024",
             "estado_recibo": "Cobrado",
             "importe_pagar": 235.0,
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "id_recibo": "000000000004",
+            "nro_poliza": "000000000000",
+            "fecha_inicio": "12/12/2021",
+            "duracion": "Anual",
+            "importe_cobrar": 250.0,
+            "fecha_cobro": "12/12/2021",
+            "estado_recibo": "Cobrado_Banco",
+            "importe_pagar": 250.0,
+            "estado_liquidacion": "Liquidado",
+            "fecha_liquidacion": "31/12/2023"
+        },
+        {
+            "id_recibo": "000000000007",
+            "nro_poliza": "000000000000",
+            "fecha_inicio": "24/9/2024",
+            "duracion": "Semestral",
+            "importe_cobrar": 250.0,
+            "fecha_cobro": "30/9/2024",
+            "estado_recibo": "Cobrado_Banco",
+            "importe_pagar": 300.0,
             "estado_liquidacion": "Pendiente",
             "fecha_liquidacion": ""
         }

@@ -2,7 +2,7 @@ import Utilidades
 import Polizas
 import json
 
-def menu_tomadores():
+def mostrar_menu_tomadores():
     """Menu de tomadores, permite crear, modificar o eliminar un tomador"""
     opcion_tomadores = "0"
     while opcion_tomadores != "9":
@@ -14,18 +14,18 @@ def menu_tomadores():
         opcion_tomadores = input("Introduce una opción: ")
         match opcion_tomadores:
             case "1":
-                crear_tomador()
+                mostrar_menu_crear_tomador()
             case "2":
-                modificar_tomador()
+                mostrar_menu_modificar_tomador()
             case "3":
-                eliminar_tomador()
+                mostrar_menu_eliminar_tomador()
             case "9":
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
     
 
-def crear_tomador():
+def mostrar_menu_crear_tomador():
     """Pide datos para crear un tomador, los guarda en un diccionario y lo añade a la lista de tomadores"""
     global listaTomadores
     Utilidades.limpiar_pantalla()
@@ -54,7 +54,7 @@ def crear_tomador():
         elif confirmacion == "n":
             print("Tomador no creado")
 
-def modificar_tomador():
+def mostrar_menu_modificar_tomador():
     """Pide el DNI, NIE o CIF del tomador a modificar, muestra los datos y entra en un menu que permite modificarlos"""
     Utilidades.limpiar_pantalla()
     listar_tomadores()
@@ -86,7 +86,7 @@ def modificar_tomador():
             case _:
                 print("Opción incorrecta")
 
-def eliminar_tomador():
+def mostrar_menu_eliminar_tomador():
     """Selecciona un tomador y si es posible lo elimina de la lista de tomadores"""
     Utilidades.limpiar_pantalla()
     listar_tomadores()
@@ -143,6 +143,7 @@ def cargar_tomadores() -> None:
     try:
         with open("tomadores.json", "r") as archivo_tomadores:
             listaTomadores = json.load(archivo_tomadores)
+            print(f"{len(listaTomadores)} Tomadores cargados correctamente")
     except:
         print(f"No existe tomadores guardados")
 
