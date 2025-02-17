@@ -1,5 +1,5 @@
 {
-    "ultima_poliza": "000000000003",
+    "ultima_poliza": 4,
     "polizas": [
         {
             "nro_poliza": "000000000000",
@@ -104,6 +104,32 @@
             ],
             "estado_poliza": "PteCobro",
             "fecha_emision": "25/12/2024",
+            "forma_pago": "Efectivo"
+        },
+        {
+            "nro_poliza": "000000000004",
+            "id_tomador": "23562356Y",
+            "datos_vehiculo": [
+                "c1234cvc",
+                "Ciclomotor",
+                "Suzuki",
+                "Jog",
+                "Combustión"
+            ],
+            "cobertura": [
+                "RC",
+                "RL",
+                "INC",
+                "RB"
+            ],
+            "id_conductor": [
+                "23562356Y",
+                "25/06/1999",
+                "AM A1 A2 A B",
+                "25/02/2021"
+            ],
+            "estado_poliza": "PteCobro",
+            "fecha_emision": "30/12/2023",
             "forma_pago": "Efectivo"
         }
     ]

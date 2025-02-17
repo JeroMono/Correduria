@@ -8,6 +8,7 @@
 
 # Coberturas polizas al editar, que lea las que tiene
 
+# LIQUIDACIONES SINIESTROS -> CAMBIAR ESTADOS AL LIQUIDAR?
 
 
 # DUDAS:

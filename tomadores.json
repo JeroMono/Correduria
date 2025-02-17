@@ -14,5 +14,13 @@
         "domicilio": "Por icod vive",
         "movil_contacto": "548651245",
         "email_contacto": "asdasd@asdasd.com"
+    },
+    {
+        "id_tomador": "23562356Y",
+        "denominacion": "Pepe Josebas Iriarte",
+        "fecha_nacimiento": "25/06/1999",
+        "domicilio": "C/ La berenjena 23, 3\u00baIzq, 5\u00ba Planta",
+        "movil_contacto": "456789456",
+        "email_contacto": "pepejosebas@gmail.com"
     }
 ]

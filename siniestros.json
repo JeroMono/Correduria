@@ -1,15 +1,33 @@
-[
-    {
-        "nro_siniestro": "2024-000000",
-        "nro_poliza": "000000000001",
-        "descripcion": "Choque de coches",
-        "matricula_contrario": "5214fvc",
-        "compañia_contrario": "Mapfre",
-        "nro_poliza_contrario": "0000000012312",
-        "importe_pagar": 1235.2,
-        "estado_siniestro": "Pendiente_Confirmar",
-        "fecha_abono": "2/1/2025",
-        "estado_liquidacion": "Pendiente",
-        "fecha_liquidacion": ""
-    }
-]
+{
+    "ultimos_siniestros": {
+        "2024": 0
+    },
+    "listaSiniestros": [
+        {
+            "nro_siniestro": "2024-000000",
+            "nro_poliza": "000000000001",
+            "descripcion": "Choque de coches",
+            "matricula_contrario": "5214fvc",
+            "compañia_contrario": "Mapfre",
+            "nro_poliza_contrario": "0000000012312",
+            "importe_pagar": 1235.2,
+            "estado_siniestro": "Pendiente_Confirmar",
+            "fecha_abono": "2/1/2025",
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "nro_siniestro": "2024-000001",
+            "nro_poliza": "000000000002",
+            "descripcion": "Una liada guapa",
+            "matricula_contrario": "5242fvf",
+            "compañia_contrario": "SeguroBarato",
+            "nro_poliza_contrario": "0000002123",
+            "importe_pagar": 215.0,
+            "estado_siniestro": "Confirmado",
+            "fecha_abono": "3/6/2024",
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        }
+    ]
+}

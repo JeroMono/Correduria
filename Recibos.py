@@ -43,15 +43,19 @@ def crear_recibo() -> None:
     fecha_liquidacion = configurar_fecha_liquidacion(estado_liquidacion)
 
     recibo = {"id_recibo":id_recibo,"nro_poliza":nro_poliza, "fecha_inicio":fecha_inicio, "duracion":duracion, "importe_cobrar":importe_cobrar, "fecha_cobro":fecha_cobro, "estado_recibo":estado_recibo, "importe_pagar":importe_pagar, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion}
-    listar_recibo(recibo, True)
-    confirmacion = input("¿Estás seguro de que quieres crear el recibo? (s/n): ")
-    if confirmacion == "s":
-        listaRecibos.append(recibo)
-        ultimo_recibo = int(id_recibo)
-        guardar_recibos()
-        print("Recibo creado")
-    else:
-        print("Operación cancelada")
+    
+    while True:
+        listar_recibo(recibo, True)
+        confirmacion = input("¿Estás seguro de que quieres crear el recibo? (s/n): ")
+        if confirmacion == "s":
+            listaRecibos.append(recibo)
+            ultimo_recibo = int(id_recibo)
+            guardar_recibos()
+            print("Recibo creado")
+            break
+        elif confirmacion == "n":
+            print("Operación cancelada")
+            break
 
 
 def guardar_recibos() -> None:
@@ -138,7 +142,11 @@ def listar_recibos() -> None:
 
 def listar_recibo(recibo:dict, creando:bool = False) -> None:
     """Muestra la información de un recibo"""
-    print(f"Modificando recibo: {recibo['id_recibo']}")
+    Utilidades.limpiar_pantalla()
+    if creando:
+        print(f"Creando recibo: {recibo['id_recibo']}")
+    else:
+        print(f"Modificando recibo: {recibo['id_recibo']}")
     print(f"1. Número de póliza: {recibo['nro_poliza']}")
     print(f"2. Fecha de inicio: {recibo['fecha_inicio']}")
     print(f"3. Duración: {recibo['duracion']}")

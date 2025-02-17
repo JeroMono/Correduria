@@ -84,7 +84,7 @@ def validar_fecha(fecha:str) -> str:
             return ""
         else:
             # Validación de la fecha que sea real
-            if 1 <= dia <= 31 and 1 <= mes <= 12 and AÑO_LIMITE_INFERIOR <= año <= AÑO_LIMITE_SUPERIOR:
+            if 1 <= dia <= 31 and 1 <= mes <= 12 and (AÑO_LIMITE_INFERIOR <= año <= AÑO_LIMITE_SUPERIOR):
                 if mes in [4, 6, 9, 11] and dia > 30:
                     return ""
                 elif (mes == 2 and ((año % 4 == 0 and año % 100 != 0) or (año % 400 == 0)) and dia > 29) or (mes == 2 and dia > 28 and (año % 4 != 0 or (año % 100 == 0 and año % 400 != 0))):
@@ -205,4 +205,4 @@ def limpiar_pantalla() -> None:
 
 # Ajustes de fechas
 AÑO_LIMITE_SUPERIOR = 2100
-AÑO_LIMITE_INFERIOR = 1990
+AÑO_LIMITE_INFERIOR = 1900

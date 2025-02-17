@@ -25,9 +25,12 @@ def menu_estadisticas() -> None:
 
 def informacion_poliza() -> None:
     """Pide seleccionar una póliza y muestra su información"""
+    limpiar_pantalla()
+    Polizas.listar_polizas()
     poliza = Polizas.seleccionar_nro_poliza()
     if poliza == "":
         return
+    limpiar_pantalla()
     print("Información de la póliza")
     print(f"Número de póliza: {poliza['nro_poliza']}")
     print(f"Tomador: {poliza['id_tomador']}")
@@ -45,6 +48,9 @@ def informacion_poliza() -> None:
         print(f"Numero de cuenta: {poliza['forma_pago'][1]}")
     else:
         print(f"Forma de pago: {poliza['forma_pago']}")
+    print("Vigencia: ",end="")
+    print('Vigente' if Polizas.comprobar_vigencia(poliza) else 'No Vigente')
+    input("Pulse enter para continuar")
 
 
 

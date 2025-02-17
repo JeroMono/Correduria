@@ -12,10 +12,11 @@ if __name__ == "__main__":
     Recibos.cargar_recibos()
     Siniestros.cargar_siniestros()
     Liquidaciones.cargar_liquidaciones()
-    Siniestros.guardar_siniestros()
     opcion = "0"
     while (opcion != "9"):
         limpiar_pantalla()
+        print("Correduría Mi Coche Asegurado")
+        print("Menú principal\n")
         print("1. Pólizas")
         print("2. Tomadores")
         print("3. Recibos")

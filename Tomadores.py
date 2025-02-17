@@ -120,12 +120,15 @@ def eliminar_tomador():
 
 def listar_tomadores() -> None:
     """Muestra una lista de tomadores con su ID y denominación"""
+    print(f"{'ID':<15}{'Denominación':<30}")
+    print("="*45)
     for datos in listaTomadores:
-        print(f"ID: {datos['id_tomador']}, Denominación: {datos['denominacion']}")
+        print(f"{datos['id_tomador']:<15}{datos['denominacion']:<30}")
 
 def listar_tomador(tomador:dict, creando:bool = False) -> None:
     """Muestra los datos de un tomador"""
-    print(f"ID: {tomador['id_tomador']}, Denominación: {tomador['denominacion']}")
+    print("Modifcando tomador:" if not creando else "Confirmando Tomador:")
+    print(f"ID: {tomador['id_tomador']}")
     print(f"1. Denominación: {tomador['denominacion']}")
     print(f"2. Fecha de nacimiento: {tomador['fecha_nacimiento']}")
     print(f"3. Domicilio: {tomador['domicilio']}")
@@ -155,7 +158,7 @@ def guardar_tomadores() -> None:
 def configurar_tomador(modificando:bool=False) -> str:
     """Pide el DNI, NIE o CIF del tomador y devuelve el valor introducido. Si el valor ya existe en la lista de tomadores, lo indica y pide otro valor. Si el valor introducido no es correcto, lo indica y pide otro valor."""
     while True:
-        tomador_id = input("Introduce el DNI, NIE o CIF del tomador: ")
+        tomador_id = input("Introduce el DNI, NIE o CIF del tomador: ").upper()
         if tomador_id == "":
             confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
             if confirmacion == "s":

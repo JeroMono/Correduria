@@ -32,21 +32,35 @@ def crear_siniestro() -> None:
     if fecha_siniestro == "":
         return
     nro_siniestro = generar_nro_siniestro(fecha_siniestro)
-    nro_poliza = configurar_poliza_siniestro(fecha_siniestro)
+    nro_poliza = configurar_poliza_siniestro()
     if nro_poliza == "":
         return
     descripcion = configurar_desc_siniestro()
     matricula_contrario = configurar_matricula_contrario()
+    if matricula_contrario == "":
+        return
     compañia_contrario = configurar_compañia_contrario()
     nro_poliza_contrario = configurar_nro_poliza_contrario()
     importe_pagar = configurar_importe_pagar()
     estado_siniestro = configurar_estado_siniestro()
     fecha_abono = configurar_fecha_abono()
-    estado_liquidacion = configurar_estado_liquidacion()
-    fecha_liquidacion = configurar_fecha_liquidacion(estado_liquidacion)
-
-    listaSiniestros.append({"nro_siniestro":nro_siniestro, "nro_poliza":nro_poliza, "descripcion":descripcion, "matricula_contrario":matricula_contrario, "compañia_contrario":compañia_contrario, "nro_poliza_contrario":nro_poliza_contrario, "importe_pagar":importe_pagar, "estado_siniestro":estado_siniestro, "fecha_abono":fecha_abono, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion})
-    guardar_siniestros()
+    estado_liquidacion = "Pendiente"
+    fecha_liquidacion = ""
+    siniestro = {"nro_siniestro":nro_siniestro, "nro_poliza":nro_poliza, "descripcion":descripcion, "matricula_contrario":matricula_contrario, "compañia_contrario":compañia_contrario, "nro_poliza_contrario":nro_poliza_contrario, "importe_pagar":importe_pagar, "estado_siniestro":estado_siniestro, "fecha_abono":fecha_abono, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion}
+    
+    while True:
+        Utilidades.limpiar_pantalla()
+        listar_siniestro(siniestro, True)
+        confirmacion = input("¿Estás seguro de que quieres crear el siniestro? (s/n): ").lower()
+        if confirmacion == "s":
+            listaSiniestros.append(siniestro)
+            ultimos_siniestros[fecha_siniestro.split("/")[2]] = int(nro_siniestro.split("-")[1])
+            guardar_siniestros()
+            input("Siniestro creado. Enter para continuar")
+            break
+        elif confirmacion == "n":
+            print("Siniestro no creado")
+            break
 
 
 
@@ -65,7 +79,7 @@ def modificar_siniestro() -> None:
         opcion_modificar = input("Introduce una opción: ")
         match opcion_modificar:
             case "1":
-                poliza = configurar_poliza_siniestro(modificar_siniestro["fecha_abono"])
+                poliza = configurar_poliza_siniestro()
                 if poliza != "":
                     modificar_siniestro["nro_poliza"] = poliza
             case "2":
@@ -83,10 +97,6 @@ def modificar_siniestro() -> None:
             case "8":
                 modificar_siniestro["fecha_abono"] = configurar_fecha_abono()
             case "9":
-                modificar_siniestro["estado_liquidacion"] = configurar_estado_liquidacion()
-            case "10":
-                modificar_siniestro["fecha_liquidacion"] = configurar_fecha_liquidacion(modificar_siniestro["estado_liquidacion"])
-            case "0":
                 print("Volviendo al menú de siniestros")
                 break
             case _:
@@ -117,36 +127,32 @@ def eliminar_siniestro() -> None:
 def listar_siniestros() -> None:
     """Muestra un listado de todos los siniestros"""
     print("Listado de siniestros")
-    print(f"{'Nro.Siniestro':<13}{'Nro. Póliza':<15}{'Descripción':<30}{'Mat.Ctrio':<10}{'Cmpñía.Ctrrio':<13}{'Nro. Póliza Contrario':<15}{'Importe a Pagar':<10}{'Estado Siniestro':<12}{'Fecha Abono':<15}{'Estado Liquidación':<15}{'Fecha Liquidación':<15}")
+    print(f"{'Nro.Siniestro':<14}{'Nro. Póliza':<15}{'Descripción':<40}{'Mat.Ctrio':<10}")
     for siniestro in listaSiniestros:
-        print(f"{siniestro['nro_siniestro']:<13}{siniestro['nro_poliza']:<15}{siniestro['descripcion']:<30}{siniestro['matricula_contrario']:<10}{siniestro['compañia_contrario']:<13}{siniestro['nro_poliza_contrario']:<15}{siniestro['importe_pagar']:<10}{siniestro['estado_siniestro']:<12}{siniestro['fecha_abono']:<15}{siniestro['estado_liquidacion']:<15}{siniestro['fecha_liquidacion']:<15}")
+        print(f"{siniestro['nro_siniestro']:<14}{siniestro['nro_poliza']:<15}{siniestro['descripcion']:<40}{siniestro['matricula_contrario']:<10}")
 
-def listar_siniestro(siniestro:dict) -> None:
+def listar_siniestro(siniestro:dict, creando:bool = False) -> None:
     """Muestra los datos de un siniestro"""
     print(f"Modificando Siniestro Número: {siniestro['nro_siniestro']}")
-    print(f" 1. Nro. Póliza: {siniestro['nro_poliza']}")
-    print(f" 2. Descripción: {siniestro['descripcion']}")
-    print(f" 3. Matrícula Contrario: {siniestro['matricula_contrario']}")
-    print(f" 4. Compañía Contrario: {siniestro['compañia_contrario']}")
-    print(f" 5. Nro. Póliza Contrario: {siniestro['nro_poliza_contrario']}")
-    print(f" 6. Importe a Pagar: {siniestro['importe_pagar']}")
-    print(f" 7. Estado Siniestro: {siniestro['estado_siniestro']}")
-    print(f" 8. Fecha Abono: {siniestro['fecha_abono']}")
-    print(f" 9. Estado Liquidación: {siniestro['estado_liquidacion']}")
-    print(f"10. Fecha Liquidación: {siniestro['fecha_liquidacion']}")
-    print(" 0 . Volver")
+    print(f"1. Nro. Póliza: {siniestro['nro_poliza']}")
+    print(f"2. Descripción: {siniestro['descripcion']}")
+    print(f"3. Matrícula Contrario: {siniestro['matricula_contrario']}")
+    print(f"4. Compañía Contrario: {siniestro['compañia_contrario']}")
+    print(f"5. Nro. Póliza Contrario: {siniestro['nro_poliza_contrario']}")
+    print(f"6. Importe a Pagar: {siniestro['importe_pagar']}")
+    print(f"7. Estado Siniestro: {siniestro['estado_siniestro']}")
+    print(f"8. Fecha Abono: {siniestro['fecha_abono']}")
+    print(f"-> Estado Liquidación: {siniestro['estado_liquidacion']}")
+    print(f"-> Fecha Liquidación: {siniestro['fecha_liquidacion']}")
+    if not creando:
+        print("9 . Volver")
 
 def generar_nro_siniestro(fecha:str) -> str:
     """Genera un identificador de siniestro único correlativo para un año dado."""
     año_s = fecha.split("/")[2]
-    siniestro_año = []
-    for siniestro in listaSiniestros:
-        if siniestro["nro_siniestro"].split("-")[0] == año_s:
-            siniestro_año.append(int(siniestro["nro_siniestro"].split("-")[1]))
-    if siniestro_año:
-        ultimo_siniestro = max(siniestro_año) + 1
-    else:
-        ultimo_siniestro = 0
+    if not ultimos_siniestros.get(año_s):
+        ultimos_siniestros[año_s] = 0
+    ultimo_siniestro = ultimos_siniestros[año_s] + 1
     return f"{año_s}-{str(ultimo_siniestro).zfill(6)}"
 
 def seleccionar_siniestro() -> dict:
@@ -200,17 +206,21 @@ def seleccionar_siniestro() -> dict:
 def cargar_siniestros() -> None:
     """Carga los siniestros desde el archivo siniestros.json"""
     global listaSiniestros
+    global ultimos_siniestros
     try:
         with open("siniestros.json", "r", encoding="utf-8") as archivo_siniestros:
-            listaSiniestros = json.load(archivo_siniestros)
+            datos = json.load(archivo_siniestros)
+            ultimos_siniestros = datos["ultimos_siniestros"]
+            listaSiniestros = datos["listaSiniestros"]
     except:
-        print("Error al cargar los siniestros")
+        print("No existen datos de siniestros")
+        ultimos_siniestros = {}
 
 def guardar_siniestros() -> None:
     """Guarda los siniestros en el archivo siniestros.json"""
     try:
         with open("siniestros.json", "w", encoding="utf-8") as archivo_siniestros:
-            json.dump(listaSiniestros, archivo_siniestros, ensure_ascii=False, indent=4)
+            json.dump({"ultimos_siniestros":ultimos_siniestros ,"listaSiniestros":listaSiniestros}, archivo_siniestros, ensure_ascii=False, indent=4)
     except:
         print("Error al guardar los siniestros")
 
@@ -226,16 +236,14 @@ def configurar_fecha_siniestro() -> str:
             continue
         fecha_siniestro = Utilidades.validar_fecha(fecha_siniestro)
         if fecha_siniestro:
-            dia_s, mes_s, año_s = fecha_siniestro.split("/")
             return fecha_siniestro
         else:
             print("Fecha incorrecta")
     
 
 
-def configurar_poliza_siniestro(fecha:str) -> str:
+def configurar_poliza_siniestro() -> str:
     """Pide el número de póliza del siniestro y lo valida"""
-    dia_s, mes_s, año_s = fecha.split("/")
     while True:
         nro_poliza = input("Introduce el número de póliza: ")
         if not nro_poliza:
@@ -279,7 +287,19 @@ def configurar_matricula_contrario() -> str:
     """Pide la matrícula del vehículo contrario, la valida y la devuelve"""
     while True:
         matricula_contrario = input("Introduce la matrícula del vehículo contrario: ")
-        if Utilidades.validar_matricula(matricula_contrario):
+        if matricula_contrario == "":
+            confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
+            if confirmacion == "s":
+                return ""
+        while True:
+            tipos = {"1": "Ciclomotor", "2": "Moto", "3": "Turismo", "4": "Furgoneta", "5": "Camión"}
+            for numero, tipo in tipos.items():
+                print(f"{numero}. {tipo}")
+            entrada = input("Introduce el tipo de vehículo(): ")
+            if entrada in ["1", "2", "3", "4", "5"]:
+                tipo = tipos[entrada]
+                break
+        if Utilidades.validar_matricula(matricula_contrario, tipo):
             return matricula_contrario
 
 def configurar_compañia_contrario() -> str:
