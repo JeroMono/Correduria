@@ -12,7 +12,7 @@
             "compañia_contrario": "Mapfre",
             "nro_poliza_contrario": "0000000012312",
             "importe_pagar": 1235.2,
-            "estado_siniestro": "Pendiente_Confirmar",
+            "estado_siniestro": "Pagado",
             "fecha_abono": "2/1/2025",
             "estado_liquidacion": "Pendiente",
             "fecha_liquidacion": ""

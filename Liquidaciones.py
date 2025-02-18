@@ -133,7 +133,7 @@ def mostrar_menu_cerrar_liquidacion() -> None:
             if siniestro["estado_liquidacion"] == "Pendiente":
                 siniestro["estado_liquidacion"] = "Liquidado"
                 siniestro["fecha_liquidacion"] = liquidacion_cerrar["fecha_liquidacion"]
-                print("Liquidado siniestro", siniestro["nr_siniestro"])
+                print("Liquidado siniestro", siniestro["nro_siniestro"])
 
 
     liquidacion_cerrar["estado_liquidacion"] = "Cerrada"
@@ -200,11 +200,11 @@ def seleccionar_liquidacion() -> dict:
                     return ''
                 continue
             try:
-                numero_liquidacion = str(int(numero_liquidacion))
+                numero_liquidacion = f"{int(numero_liquidacion):06}"
             except:
                 print("Número no válido")
                 continue
-            if not f"{año_liquidacion}-{numero_liquidacion:06}" in numeros_liquidacion_año:
+            if not f"{año_liquidacion}-{numero_liquidacion}" in numeros_liquidacion_año:
                 print("El numero de liquidación no existe")
                 continue
             for liquidacion in liquidaciones_año:
@@ -273,10 +273,11 @@ def calcular_recibos_cobrados(fecha_liquidacion:str) -> tuple:
     """Calcula el importe de los recibos cobrados hasta la fecha de liquidación y los devuelve con la lista de los recibos a liquidar"""
     importe_recibos_cobrados = 0.0
     lista_recibos_liquidar = []
-    fecha_liquidacion = fecha_liquidacion.split("/")[::-1]
+    fecha_liquidacion = list(map(int, fecha_liquidacion.split("/")))[::-1]
     for recibo in Recibos.listaRecibos:
         if (recibo["estado_recibo"] in ["Cobrado", "Cobrado_Banco"]) and recibo["estado_liquidacion"] == "Pendiente":
-            fecha_cobro = recibo["fecha_cobro"].split("/")[::-1]
+            fecha_cobro = list(map(int, recibo["fecha_cobro"].split("/")))[::-1]
+            print(fecha_cobro, fecha_liquidacion, fecha_cobro < fecha_liquidacion)
             if fecha_cobro < fecha_liquidacion:
                 importe_recibos_cobrados += recibo["importe_cobrar"]
                 lista_recibos_liquidar.append((recibo["nro_poliza"],recibo["id_recibo"]))
@@ -286,10 +287,11 @@ def calcular_recibos_baja(fecha_liquidacion:str) -> tuple:
     """Calcula el importe de los recibos dados de baja hasta la fecha de liquidación y los devuelve con la lista de los recibos a liquidar"""
     importe_recibos_baja = 0.0
     lista_recibos_baja = []
-    fecha_liquidacion = fecha_liquidacion.split("/")[::-1]
+    fecha_liquidacion = list(map(int, fecha_liquidacion.split("/")))[::-1]
     for recibo in Recibos.listaRecibos:
         if recibo["estado_recibo"] == "Baja" and recibo["estado_liquidacion"] == "Pendiente":
-            fecha_cobro = recibo["fecha_cobro"].split("/")[::-1]
+            fecha_cobro = list(map(int, recibo["fecha_cobro"].split("/")))[::-1]
+            print("baja",fecha_cobro, fecha_liquidacion, fecha_cobro < fecha_liquidacion)
             if fecha_cobro < fecha_liquidacion:
                 importe_recibos_baja += recibo["importe_cobrar"]
                 lista_recibos_baja.append((recibo["nro_poliza"],recibo["id_recibo"]))
@@ -299,10 +301,10 @@ def calcular_siniestros_pagados(fecha_liquidacion:str) -> tuple:
     """Calcula el importe de los siniestros pagados hasta la fecha de liquidación y los devuelve con la lista de los siniestros a liquidar"""
     importe_siniestros_pagados = 0.0
     lista_siniestros_liquidados = []
-    fecha_liquidacion = fecha_liquidacion.split("/")[::-1]
+    fecha_liquidacion = list(map(int, fecha_liquidacion.split("/")))[::-1]
     for siniestro in Siniestros.listaSiniestros:
         if siniestro["estado_siniestro"] == "Pagado" and siniestro["estado_liquidacion"] == "Pendiente":
-            fecha_abono = siniestro["fecha_abono"].split("/")[::-1]
+            fecha_abono = list(map(int, siniestro["fecha_abono"].split("/")))[::-1]
             if fecha_abono < fecha_liquidacion:
                 importe_siniestros_pagados += siniestro["importe_pagar"]
                 lista_siniestros_liquidados.append((siniestro["nro_poliza"],siniestro["nro_siniestro"]))

@@ -8,7 +8,7 @@
             "duracion": "Semestral",
             "importe_cobrar": 250.0,
             "fecha_cobro": "20/2/2024",
-            "estado_recibo": "Pendiente_Banco",
+            "estado_recibo": "Baja",
             "importe_pagar": 500.0,
             "estado_liquidacion": "Pendiente",
             "fecha_liquidacion": ""

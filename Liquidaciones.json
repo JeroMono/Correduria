@@ -36,9 +36,9 @@
     },
     {
         "nro_liquidacion": "2025-000001",
-        "fecha_liquidacion": "12/02/2025",
+        "fecha_liquidacion": "30/04/2025",
         "estado_liquidacion": "Abierta",
-        "importe_recibos_cobrados": 765.0,
+        "importe_recibos_cobrados": 1015.0,
         "lista_recibos_liquidar": [
             [
                 "000000000002",
@@ -51,15 +51,37 @@
             [
                 "000000000000",
                 "000000000007"
+            ],
+            [
+                "000000000005",
+                "000000000009"
             ]
         ],
-        "importe_recibos_baja": 0.0,
-        "lista_recibos_baja": [],
-        "importe_siniestros_pagados": 0.0,
-        "lista_siniestros_liquidados": [],
+        "importe_recibos_baja": 250.0,
+        "lista_recibos_baja": [
+            [
+                "000000000000",
+                "000000000000"
+            ]
+        ],
+        "importe_siniestros_pagados": 2035.2,
+        "lista_siniestros_liquidados": [
+            [
+                "000000000001",
+                "2024-000000"
+            ],
+            [
+                "000000000000",
+                "2025-000001"
+            ],
+            [
+                "000000000005",
+                "2025-000002"
+            ]
+        ],
         "importe_liquidacion": [
-            765.0,
-            0.0
+            -1020.2,
+            250.0
         ]
     }
 ]

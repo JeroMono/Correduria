@@ -114,7 +114,7 @@ def mostrar_menu_eliminar_siniestro() -> None:
     if not siniestro_eliminar:
         return
     
-    if siniestro_eliminar['estado_siniestro'] == "Pendiente_Confirmar":
+    if siniestro_eliminar['estado_siniestro'] == "Pendiente_Confirmar" or siniestro_eliminar['estado_liquidacion'] == "Liquidado":
         confirmacion = input("¿Estás seguro de que quieres eliminar el siniestro? (s/n): ").upper()
         if confirmacion == "S":
             listaSiniestros.remove(siniestro_eliminar)
