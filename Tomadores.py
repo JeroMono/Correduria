@@ -117,6 +117,7 @@ def mostrar_menu_eliminar_tomador() -> None:
             listaTomadores.remove(tomador_eleccion)
             guardar_tomadores()
             print("Tomador eliminado")
+    input("Pulse <Enter> para continuar")
 
 def listar_tomadores() -> None:
     """Muestra una lista de tomadores con su ID y denominación"""
