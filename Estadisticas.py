@@ -5,7 +5,7 @@ import Recibos
 from Utilidades import limpiar_pantalla as limpiar_pantalla
 
 def mostrar_menu_estadisticas() -> None:
-    """Menu de estadisticas, permite selecionar ver la información de una póliza o de una liquidación"""
+    """Menu de estadisticas, permite ir al menu de información de una póliza o de una liquidación"""
     opcion_estadistica = "0"
     while (opcion_estadistica != "9"):
         limpiar_pantalla()
@@ -23,7 +23,6 @@ def mostrar_menu_estadisticas() -> None:
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
-
 
 def mostrar_menu_informacion_poliza() -> None:
     """Pide seleccionar una póliza y muestra su información"""

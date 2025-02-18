@@ -56,4 +56,3 @@ def mostrar_menu_principal() -> None:
 if __name__ == "__main__":
     cargar_datos()
     mostrar_menu_principal()
-    

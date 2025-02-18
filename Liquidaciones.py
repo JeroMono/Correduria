@@ -211,9 +211,6 @@ def seleccionar_liquidacion() -> dict:
                 if liquidacion["nro_liquidacion"] == f"{año_liquidacion}-{numero_liquidacion:06}":
                     return liquidacion
 
-
-
-
 def cargar_liquidaciones() -> None:
     """Carga las liquidaciones desde el archivo Liquidaciones.json"""
     global listaLiquidaciones

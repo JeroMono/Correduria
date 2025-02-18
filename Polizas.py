@@ -26,7 +26,6 @@ def mostrar_menu_polizas()-> None:
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
-    
 
 def mostrar_menu_crear_poliza()-> None:
     """Menú para crear una póliza. Pide al usuario los datos necesarios y los guarda en el archivo polizas.json."""
@@ -77,7 +76,6 @@ def crear_poliza(poliza:dict)-> None:
         elif confirmacion == "n":
             print("Póliza no creada")
             break
-
 
 def mostrar_menu_modificar_poliza()-> None:
     """Menú para modificar una póliza. Pide al usuario el número de póliza a modificar y luego permite elegir los datos a modificar."""
@@ -560,7 +558,6 @@ def comprobar_vigencia(poliza:dict, recibo_omitido:dict = {})-> bool:
     if fecha_actual > ultimo_recibo_fecha:
         return False
     return True
-
 
 def eliminar_poliza(poliza_eliminacion:dict)-> None:
     global listaPolizas

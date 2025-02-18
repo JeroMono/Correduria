@@ -23,7 +23,6 @@ def mostrar_menu_tomadores() -> None:
                 print("Volviendo al menú principal")
             case _:
                 print("Opción incorrecta")
-    
 
 def mostrar_menu_crear_tomador() -> None:
     """Pide datos para crear un tomador, los guarda en un diccionario y lo añade a la lista de tomadores"""
@@ -73,13 +72,13 @@ def mostrar_menu_modificar_tomador() -> None:
             case "1":
                 dato["denominacion"] = input("Introduce la nueva denominación: ")
             case "2":
-                dato["fecha_nacimiento"] = configurar_fecha_nacimiento(id_tomador)
+                dato["fecha_nacimiento"] = configurar_fecha_nacimiento(id_tomador,tomador_eleccion)
             case "3":
-                dato["domicilio"] = configurar_domicilio()
+                dato["domicilio"] = configurar_domicilio(tomador_eleccion)
             case "4":
-                dato["movil_contacto"] = configurar_movil_contacto()
+                dato["movil_contacto"] = configurar_movil_contacto(tomador_eleccion)
             case "5":
-                dato["email_contacto"] = configurar_email_contacto()
+                dato["email_contacto"] = configurar_email_contacto(tomador_eleccion)
             case "9":
                 print("Volviendo al menú de Tomadores")
                 break
@@ -156,11 +155,12 @@ def guardar_tomadores() -> None:
     except:
         print(f"Error al guardar los tomadores")
 
-
-def configurar_tomador(modificando:bool=False) -> str:
+def configurar_tomador(modificando:bool=False,tomador_eleccion:dict = {}) -> str:
     """Pide el DNI, NIE o CIF del tomador y devuelve el valor introducido. Si el valor ya existe en la lista de tomadores, lo indica y pide otro valor. Si el valor introducido no es correcto, lo indica y pide otro valor."""
     while True:
         tomador_id = input("Introduce el DNI, NIE o CIF del tomador: ").upper()
+        if tomador_id == "" and tomador_eleccion:
+            return tomador_eleccion["id_tomador"]
         if tomador_id == "":
             confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
             if confirmacion == "s":
@@ -175,14 +175,23 @@ def configurar_tomador(modificando:bool=False) -> str:
         else:
             print("DNI, NIE o CIF incorrecto")
 
+def configurar_descrion(tomador_eleccion:dict = {}) -> str:
+    """Pide la descripción de un tomador y devuelve el valor introducido"""
+    while True:
+        entrada = input("Introduce la descripción del tomador: ")
+        if not entrada and tomador_eleccion:
+            return tomador_eleccion["denominacion"]
+        if entrada:
+            return entrada
 
-def configurar_fecha_nacimiento(tomador_id) -> str:
+def configurar_fecha_nacimiento(tomador_id:str,tomador_eleccion:dict = {}) -> str:
     """Pide la fecha de nacimiento en caso de ser una persona física y devuelve el valor introducido"""
-    # Si es DNI o NIE
+    # Comprobamos que sea DNI o NIE
     if Utilidades.comprobar_dni(tomador_id)[1]:
         while True:
             fecha = input("Introduce la fecha de nacimiento del tomador dd/mm/aaaa: ")
-            # Devuelve la fecha en formato dd/mm/aaaa si es correcta
+            if not fecha and tomador_eleccion:
+                return tomador_eleccion["fecha_nacimiento"]
             fecha = Utilidades.validar_fecha(fecha)
             if fecha:
                 return fecha
@@ -190,26 +199,30 @@ def configurar_fecha_nacimiento(tomador_id) -> str:
     else:
         return ""
 
-def configurar_domicilio() -> str:
+def configurar_domicilio(tomador_eleccion:dict = {}) -> str:
     """Pide la dirección del tomador y devuelve el valor introducido"""
     while True:
         entrada = input("Introduce la dirección del tomador: ")
+        if not entrada and tomador_eleccion:
+            return tomador_eleccion["domicilio"]
         if entrada:
             return entrada
 
-
-def configurar_movil_contacto() -> str:
+def configurar_movil_contacto(tomador_eleccion:dict = {}) -> str:
     """Pide el teléfono del tomador y devuelve el valor introducido"""
     while True:
         entrada = input("Introduce el teléfono del tomador: ")
+        if not entrada and tomador_eleccion:
+            return tomador_eleccion["movil_contacto"]
         if Utilidades.validar_telefono(entrada):
             return entrada
 
-
-def configurar_email_contacto() -> str:
+def configurar_email_contacto(tomador_eleccion:dict = {}) -> str:
     """ Pide el email del tomador y devuelve el valor introducido"""
     while True:
         entrada = input("Introduce el email del tomador: ")
+        if not entrada and tomador_eleccion:
+            return tomador_eleccion["email_contacto"]
         if Utilidades.validar_email(entrada):
             return entrada
 
