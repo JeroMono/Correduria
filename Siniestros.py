@@ -47,14 +47,16 @@ def mostrar_menu_crear_siniestro() -> None:
     estado_liquidacion = "Pendiente"
     fecha_liquidacion = ""
     siniestro = {"nro_siniestro":nro_siniestro, "nro_poliza":nro_poliza, "descripcion":descripcion, "matricula_contrario":matricula_contrario, "compañia_contrario":compañia_contrario, "nro_poliza_contrario":nro_poliza_contrario, "importe_pagar":importe_pagar, "estado_siniestro":estado_siniestro, "fecha_abono":fecha_abono, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion}
-    
+    crear_siniestro(siniestro)
+
+def crear_siniestro(siniestro:dict) -> None:
     while True:
         Utilidades.limpiar_pantalla()
         listar_siniestro(siniestro, True)
         confirmacion = input("¿Estás seguro de que quieres crear el siniestro? (s/n): ").lower()
         if confirmacion == "s":
             listaSiniestros.append(siniestro)
-            ultimos_siniestros[fecha_siniestro.split("/")[2]] = int(nro_siniestro.split("-")[1])
+            ultimos_siniestros[siniestro["nro_siniestro"].split("-")[0]] = int(siniestro["nro_siniestro"].split("-")[1])
             guardar_siniestros()
             input("Siniestro creado. <Enter> para continuar")
             break

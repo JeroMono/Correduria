@@ -6,7 +6,9 @@ import Liquidaciones
 import Estadisticas
 from Utilidades import limpiar_pantalla as limpiar_pantalla
 
-if __name__ == "__main__":
+def cargar_datos() -> None:
+    """Carga los datos de los ficheros en las listas correspondientes de cada módulo.
+    También revisa las polizas que estén vigentes y mira si los recibos caducaron, actualizando el estado si es necesario."""
     limpiar_pantalla()
     print("Iniciando carga de datos")
     Polizas.cargar_polizas()
@@ -16,6 +18,9 @@ if __name__ == "__main__":
     Liquidaciones.cargar_liquidaciones()
     Polizas.actualizar_vigencia()
     input("Pulse <Enter> para continuar")
+
+def mostrar_menu_principal() -> None:
+    """Muestra el menú principal de la aplicación"""
     opcion = "0"
     while (opcion != "9"):
         limpiar_pantalla()
@@ -47,3 +52,8 @@ if __name__ == "__main__":
             case _:
                 print("Opción incorrecta")
                 input("Pulse <Enter> para continuar")
+
+if __name__ == "__main__":
+    cargar_datos()
+    mostrar_menu_principal()
+    

@@ -2,7 +2,7 @@ import Utilidades
 import Polizas
 import json
 
-def mostrar_menu_tomadores():
+def mostrar_menu_tomadores() -> None:
     """Menu de tomadores, permite crear, modificar o eliminar un tomador"""
     opcion_tomadores = "0"
     while opcion_tomadores != "9":
@@ -25,7 +25,7 @@ def mostrar_menu_tomadores():
                 print("Opción incorrecta")
     
 
-def mostrar_menu_crear_tomador():
+def mostrar_menu_crear_tomador() -> None:
     """Pide datos para crear un tomador, los guarda en un diccionario y lo añade a la lista de tomadores"""
     global listaTomadores
     Utilidades.limpiar_pantalla()
@@ -35,7 +35,7 @@ def mostrar_menu_crear_tomador():
         return
     
     denominacion = input("Introduce el nombre de la persona o empresa: ")
-    fecha_nacimiento = configurar_fecha(id_tomador)
+    fecha_nacimiento = configurar_fecha_nacimiento(id_tomador)
     domicilio = configurar_domicilio()
     movil_contacto = configurar_movil_contacto()
     email_contacto = configurar_email_contacto()
@@ -54,7 +54,7 @@ def mostrar_menu_crear_tomador():
         elif confirmacion == "n":
             print("Tomador no creado")
 
-def mostrar_menu_modificar_tomador():
+def mostrar_menu_modificar_tomador() -> None:
     """Pide el DNI, NIE o CIF del tomador a modificar, muestra los datos y entra en un menu que permite modificarlos"""
     Utilidades.limpiar_pantalla()
     listar_tomadores()
@@ -73,7 +73,7 @@ def mostrar_menu_modificar_tomador():
             case "1":
                 dato["denominacion"] = input("Introduce la nueva denominación: ")
             case "2":
-                dato["fecha_nacimiento"] = configurar_fecha(id_tomador)
+                dato["fecha_nacimiento"] = configurar_fecha_nacimiento(id_tomador)
             case "3":
                 dato["domicilio"] = configurar_domicilio()
             case "4":
@@ -86,7 +86,7 @@ def mostrar_menu_modificar_tomador():
             case _:
                 print("Opción incorrecta")
 
-def mostrar_menu_eliminar_tomador():
+def mostrar_menu_eliminar_tomador() -> None:
     """Selecciona un tomador y si es posible lo elimina de la lista de tomadores"""
     Utilidades.limpiar_pantalla()
     listar_tomadores()
@@ -175,7 +175,7 @@ def configurar_tomador(modificando:bool=False) -> str:
             print("DNI, NIE o CIF incorrecto")
 
 
-def configurar_fecha(tomador_id) -> str:
+def configurar_fecha_nacimiento(tomador_id) -> str:
     """Pide la fecha de nacimiento en caso de ser una persona física y devuelve el valor introducido"""
     # Si es DNI o NIE
     if Utilidades.comprobar_dni(tomador_id)[1]:

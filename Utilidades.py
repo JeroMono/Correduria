@@ -8,6 +8,7 @@ def comprobar_dni(dni:str) -> tuple[bool, bool]:
     LETRAS_NIE = "XYZ"
     LETRAS_CIF = "ABCDEFGHJNPQRSUVW"
     LETRAS_CONTROL = "JABCDEFGHI"
+    # Validación de CIF
     if len(dni) == 9 and dni[0].upper() in LETRAS_CIF:
         if(((dni[0].isalpha()) and dni[1:-1].isdigit())):
             cif = dni.upper().strip()
@@ -35,11 +36,14 @@ def comprobar_dni(dni:str) -> tuple[bool, bool]:
                 return ((control == str(digito_control) or control == LETRAS_CONTROL[digito_control]), False)  # Ambos posibles
         else:
             return (False, False)
+    
     elif len(dni) == 9 and dni[-1].isalpha():
+        # Validación de NIE
         if((dni[0].upper() in LETRAS_NIE) and dni[1:-1].isdigit()):
             combinado = int(str(LETRAS_NIE.index(dni[0])) + dni[1:-1])
             if (dni[-1] == LETRAS_NIF[(combinado%23)]):
                 return (True, True)
+        # Validación de NIF
         elif (dni[:-1].isdigit()):
             if dni[-1] == LETRAS_NIF[(int(dni[:-1]) % 23)]:
                 return (True, True)
@@ -140,7 +144,7 @@ def validar_telefono(telefono:str) -> bool:
 
 def validar_matricula(matricula:str, tipo_vehiculo:str) -> bool:
     """Comprueba si una matrícula es válida."""
-    # Formato de matrícula actual (desde el 2000): 4 números, 3 letras
+    # Formato de matrícula actual (desde el 2000): 4 números, 3 letras para turismos, furgonetas, motos y camiones
     matricula = matricula.replace(" ", "").upper()
     matricula = matricula.replace("-", "")
     LETRAS_VALIDAS = "BCDFGHJKLMNPRSTVWXYZ"
@@ -156,6 +160,7 @@ def validar_matricula(matricula:str, tipo_vehiculo:str) -> bool:
             1 <= len(numeros) <= 4 and numeros.isdigit() and
             1 <= len(sufijo) <= 2 and sufijo.isalpha()):
             return True
+    # Formato de matrícula para ciclomotores: C + 1 número + 4 números + 2 letras
     elif tipo_vehiculo == "Ciclomotor":
         print("Ciclomotor", matricula)
         if len(matricula) != 8:

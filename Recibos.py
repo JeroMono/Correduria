@@ -71,7 +71,7 @@ def mostrar_menu_crear_recibo() -> None:
 def guardar_recibos() -> None:
     """Guarda la lista de recibos en un archivo json"""
     try:
-        with open("recibos.json", "w") as archivo_recibos:
+        with open("recibos.json", "w", encoding='utf-8') as archivo_recibos:
             json.dump({"ultimo_recibo":ultimo_recibo,"recibos":listaRecibos}, archivo_recibos, ensure_ascii=False, indent=4)
     except:
         print("Error al guardar los recibos")

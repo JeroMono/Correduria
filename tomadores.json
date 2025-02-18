@@ -22,5 +22,13 @@
         "domicilio": "C/ La berenjena 23, 3\u00baIzq, 5\u00ba Planta",
         "movil_contacto": "456789456",
         "email_contacto": "pepejosebas@gmail.com"
+    },
+    {
+        "id_tomador": "A84534312",
+        "denominacion": "Pepitos S.A.",
+        "fecha_nacimiento": "",
+        "domicilio": "C/La hermita 67",
+        "movil_contacto": "326584526",
+        "email_contacto": "petitos.sa@pepitos.com"
     }
 ]

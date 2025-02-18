@@ -1,6 +1,7 @@
 {
     "ultimos_siniestros": {
-        "2024": 1
+        "2024": 3,
+        "2025": 1
     },
     "listaSiniestros": [
         {
@@ -30,7 +31,7 @@
             "fecha_liquidacion": ""
         },
         {
-            "nro_siniestro": "2024-000001",
+            "nro_siniestro": "2024-000002",
             "nro_poliza": "000000000000",
             "descripcion": "Accidente Aparatoso",
             "matricula_contrario": "2514fvd",
@@ -39,6 +40,32 @@
             "importe_pagar": 215.0,
             "estado_siniestro": "Confirmado",
             "fecha_abono": "12/1/2025",
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "nro_siniestro": "2024-000003",
+            "nro_poliza": "000000000003",
+            "descripcion": "Brutal choque frontal",
+            "matricula_contrario": "7894tfr",
+            "compañia_contrario": "Liberty",
+            "nro_poliza_contrario": "123213",
+            "importe_pagar": 123.0,
+            "estado_siniestro": "Confirmado",
+            "fecha_abono": "13/1/2025",
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "nro_siniestro": "2025-000001",
+            "nro_poliza": "000000000000",
+            "descripcion": "Fallo mecánico, choque trasero",
+            "matricula_contrario": "4343hjh",
+            "compañia_contrario": "Ocaso",
+            "nro_poliza_contrario": "3234",
+            "importe_pagar": 400.0,
+            "estado_siniestro": "Pagado",
+            "fecha_abono": "16/2/2025",
             "estado_liquidacion": "Pendiente",
             "fecha_liquidacion": ""
         }

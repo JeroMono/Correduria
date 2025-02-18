@@ -1,5 +1,5 @@
 {
-    "ultima_poliza": 4,
+    "ultima_poliza": 5,
     "polizas": [
         {
             "nro_poliza": "000000000000",
@@ -103,29 +103,24 @@
             "forma_pago": "Efectivo"
         },
         {
-            "nro_poliza": "000000000004",
-            "id_tomador": "23562356Y",
-            "matricula": "c1234cvc",
+            "nro_poliza": "000000000005",
+            "id_tomador": "A84534312",
+            "matricula": "tf2356bx",
             "datos_vehiculo": [
-                "Ciclomotor",
-                "Suzuki",
-                "Jog",
+                "Turismo",
+                "Ford",
+                "Transporter",
                 "Combustión"
             ],
-            "cobertura": [
-                "RC",
-                "RL",
-                "INC",
-                "RB"
-            ],
+            "cobertura": "RC",
             "id_conductor": [
-                "23562356Y",
-                "25/06/1999",
-                "AM A1 A2 A B",
-                "25/02/2021"
+                "43491650F",
+                "14/06/1990",
+                "B+E C1",
+                "15/10/2009"
             ],
             "estado_poliza": "PteCobro",
-            "fecha_emision": "30/12/2023",
+            "fecha_emision": "14/12/2024",
             "forma_pago": "Efectivo"
         }
     ]
