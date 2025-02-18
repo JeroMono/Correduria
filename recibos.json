@@ -1,5 +1,5 @@
 {
-    "ultimo_recibo": 8,
+    "ultimo_recibo": 9,
     "recibos": [
         {
             "id_recibo": "000000000000",
@@ -69,6 +69,18 @@
             "importe_cobrar": 250.0,
             "fecha_cobro": "15/2/2022",
             "estado_recibo": "Pendiente",
+            "importe_pagar": 250.0,
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "id_recibo": "000000000009",
+            "nro_poliza": "000000000005",
+            "fecha_inicio": "25/12/2023",
+            "duracion": "Anual",
+            "importe_cobrar": 250.0,
+            "fecha_cobro": "30/12/2024",
+            "estado_recibo": "Cobrado",
             "importe_pagar": 250.0,
             "estado_liquidacion": "Pendiente",
             "fecha_liquidacion": ""

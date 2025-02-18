@@ -112,7 +112,7 @@ def mostrar_menu_eliminar_tomador() -> None:
         if confirmacion == "s":
             if polizas_no_activas:
                 for poliza in polizas_no_activas:
-                    Polizas.listaPolizas.remove(poliza)
+                    Polizas.eliminar_poliza(poliza)
                     Polizas.guardar_polizas()
             listaTomadores.remove(tomador_eleccion)
             guardar_tomadores()
