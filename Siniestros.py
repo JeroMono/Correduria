@@ -81,23 +81,23 @@ def mostrar_menu_modificar_siniestro() -> None:
         opcion_modificar = input("Introduce una opción: ")
         match opcion_modificar:
             case "1":
-                poliza = configurar_poliza_siniestro()
+                poliza = configurar_poliza_siniestro(modificar_siniestro)
                 if poliza != "":
                     modificar_siniestro["nro_poliza"] = poliza
             case "2":
-                modificar_siniestro["descripcion"] = configurar_desc_siniestro()
+                modificar_siniestro["descripcion"] = configurar_desc_siniestro(modificar_siniestro)
             case "3":
-                modificar_siniestro["matricula_contrario"] = configurar_matricula_contrario()
+                modificar_siniestro["matricula_contrario"] = configurar_matricula_contrario(modificar_siniestro)
             case "4":
-                modificar_siniestro["compañia_contrario"] = configurar_compañia_contrario()
+                modificar_siniestro["compañia_contrario"] = configurar_compañia_contrario(modificar_siniestro)
             case "5":
-                modificar_siniestro["nro_poliza_contrario"] = configurar_nro_poliza_contrario()
+                modificar_siniestro["nro_poliza_contrario"] = configurar_nro_poliza_contrario(modificar_siniestro)
             case "6":
-                modificar_siniestro["importe_pagar"] = configurar_importe_pagar()
+                modificar_siniestro["importe_pagar"] = configurar_importe_pagar(modificar_siniestro)
             case "7":
-                modificar_siniestro["estado_siniestro"] = configurar_estado_siniestro()
+                modificar_siniestro["estado_siniestro"] = configurar_estado_siniestro(modificar_siniestro)
             case "8":
-                modificar_siniestro["fecha_abono"] = configurar_fecha_abono()
+                modificar_siniestro["fecha_abono"] = configurar_fecha_abono(modificar_siniestro)
             case "9":
                 print("Volviendo al menú de siniestros")
                 break
@@ -124,6 +124,7 @@ def mostrar_menu_eliminar_siniestro() -> None:
             print("Siniestro no eliminado")
     else:
         print("No se puede eliminar un siniestro confirmado")
+    input("Presione <Enter> para continuar")
 
 
 def listar_siniestros() -> None:
@@ -245,10 +246,12 @@ def configurar_fecha_siniestro() -> str:
     
 
 
-def configurar_poliza_siniestro() -> str:
+def configurar_poliza_siniestro(siniestro_modificar:dict = {}) -> str:
     """Pide el número de póliza del siniestro y lo valida"""
     while True:
         nro_poliza = input("Introduce el número de póliza: ")
+        if nro_poliza == "" and siniestro_modificar:
+            return siniestro_modificar["nro_poliza"]
         if not nro_poliza:
             confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
             if confirmacion == "s":
@@ -279,17 +282,21 @@ def configurar_poliza_siniestro() -> str:
             else:
                 continue
         
-def configurar_desc_siniestro() -> str:
+def configurar_desc_siniestro(siniestro_modificar:dict = {}) -> str:
     """Pide la descripción del siniestro, valida que no esté vacía y la devuelve"""
     while True:
         descripcion = input("Introduce la descripción del siniestro: ")
+        if not descripcion and siniestro_modificar:
+            return siniestro_modificar["descripcion"]
         if descripcion:
             return descripcion
 
-def configurar_matricula_contrario() -> str:
+def configurar_matricula_contrario(siniestro_modificar:dict = {}) -> str:
     """Pide la matrícula del vehículo contrario, la valida y la devuelve"""
     while True:
         matricula_contrario = input("Introduce la matrícula del vehículo contrario: ")
+        if matricula_contrario == "" and siniestro_modificar:
+            return siniestro_modificar["matricula_contrario"]
         if matricula_contrario == "":
             confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
             if confirmacion == "s":
@@ -305,24 +312,30 @@ def configurar_matricula_contrario() -> str:
         if Utilidades.validar_matricula(matricula_contrario, tipo):
             return matricula_contrario
 
-def configurar_compañia_contrario() -> str:
+def configurar_compañia_contrario(siniestro_modificar:dict = {}) -> str:
     """Pide la compañía del vehículo contrario, la valida y la devuelve"""
     while True:
         compañia_contrario = input("Introduce la compañía del vehículo contrario: ")
+        if compañia_contrario == "" and siniestro_modificar:
+            return siniestro_modificar["compañia_contrario"]
         if compañia_contrario:
             return compañia_contrario
 
-def configurar_nro_poliza_contrario() -> str:
+def configurar_nro_poliza_contrario(siniestro_modificar:dict = {}) -> str:
     """Pide el número de póliza del vehículo contrario, lo valida y lo devuelve"""
     while True:
         nro_poliza_contrario = input("Introduce el número de póliza del vehículo contrario: ")
+        if nro_poliza_contrario == "" and siniestro_modificar:
+            return siniestro_modificar["nro_poliza_contrario"]
         if nro_poliza_contrario:
             return nro_poliza_contrario
 
-def configurar_importe_pagar() -> float:
+def configurar_importe_pagar(siniestro_modificar:dict = {}) -> float:
     """Pide el importe a pagar, lo valida y lo devuelve"""
     while True:
         importe_pagar = input("Introduce el importe a pagar: ")
+        if importe_pagar == "" and siniestro_modificar:
+            return siniestro_modificar["importe_pagar"]
         try:
             importe_pagar = float(importe_pagar)
             importe_pagar = round(importe_pagar, 2)
@@ -330,10 +343,12 @@ def configurar_importe_pagar() -> float:
         except ValueError:
             print("El importe debe ser un número")
 
-def configurar_estado_siniestro() -> str:
+def configurar_estado_siniestro(siniestro_modificar:dict = {}) -> str:
     """Pide el estado del siniestro, lo valida y lo devuelve"""
     while True:
         estado_siniestro = input("Introduce el estado del siniestro (PC)Pendiente Confirmar,(C)Confirmado, (PP)Pendiente Pago ó (P)Pagado: ").upper()
+        if estado_siniestro == "" and siniestro_modificar:
+            return siniestro_modificar["estado_siniestro"]
         if estado_siniestro in ["PC", "C", "PP", "P", "PENDIENTE CONFIRMAR", "CONFIRMADO", "PENDIENTE PAGO", "PAGADO"]:
             if estado_siniestro in ["PC", "PENDIENTE CONFIRMAR"]:
                 estado_siniestro = "Pendiente_Confirmar"
@@ -345,35 +360,13 @@ def configurar_estado_siniestro() -> str:
                 estado_siniestro = "Pagado"
             return estado_siniestro
 
-def configurar_fecha_abono() -> str:
+def configurar_fecha_abono(siniestro_modificar:dict = {}) -> str:
     """Pide la fecha de abono del siniestro, la valida y la devuelve"""
     while True:
         fecha_abono = input("Introduce la fecha de abono del siniestro (dd/mm/aaaa): ")
+        if fecha_abono == "" and siniestro_modificar:
+            return siniestro_modificar["fecha_abono"]
         if Utilidades.validar_fecha(fecha_abono):
             return fecha_abono
-
-def configurar_estado_liquidacion() -> str:
-    """Pide el estado de la liquidación, lo valida y lo devuelve"""
-    while True:
-        estado_liquidacion = input("Introduce el estado de la liquidación (P)Pendiente o (L)Liquidado: ").upper()
-        if estado_liquidacion in ["P", "L", "PENDIENTE", "LIQUIDADO"]:
-            if estado_liquidacion in ["P", "PENDIENTE"]:
-                estado_liquidacion = "Pendiente"
-            elif estado_liquidacion in ["L", "LIQUIDADO"]:
-                estado_liquidacion = "Liquidado"
-            return estado_liquidacion
-        else:
-            print("Opción incorrecta")
-
-def configurar_fecha_liquidacion(estado_liquidacion:str) -> str:
-    """Pide la fecha de liquidación del siniestro, la valida y la devuelve"""
-    if estado_liquidacion == "Liquidado":
-        while True:
-            fecha_liquidacion = input("Introduce la fecha de liquidación del siniestro (dd/mm/aaaa): ")
-            if Utilidades.validar_fecha(fecha_liquidacion):
-                return fecha_liquidacion
-    else:
-        return ""
-    
 
 listaSiniestros = list()

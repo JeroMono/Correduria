@@ -41,7 +41,7 @@ def mostrar_menu_crear_recibo() -> None:
     estado_recibo = configurar_estado_recibo(nro_poliza, duracion, fecha_inicio)
     importe_pagar = configurar_importe_pagar()
     estado_liquidacion = "Pendiente"
-    fecha_liquidacion = configurar_fecha_liquidacion(estado_liquidacion)
+    fecha_liquidacion = ""
 
     recibo = {"id_recibo":id_recibo,"nro_poliza":nro_poliza, "fecha_inicio":fecha_inicio, "duracion":duracion, "importe_cobrar":importe_cobrar, "fecha_cobro":fecha_cobro, "estado_recibo":estado_recibo, "importe_pagar":importe_pagar, "estado_liquidacion":estado_liquidacion, "fecha_liquidacion":fecha_liquidacion}
     
@@ -104,19 +104,19 @@ def mostrar_menu_modificar_recibo() -> None:
         modificar_recibo = input("Introduce una opción: ")
         match modificar_recibo:
             case "1":
-                recibo_eleccion['nro_poliza'] = configurar_nro_poliza()
+                recibo_eleccion['nro_poliza'] = configurar_nro_poliza(recibo_eleccion)
             case "2":
-                recibo_eleccion['fecha_inicio'] = configurar_fecha_inicio() 
+                recibo_eleccion['fecha_inicio'] = configurar_fecha_inicio(recibo_eleccion) 
             case "3":
-                recibo_eleccion['duracion'] = configurar_duracion()
+                recibo_eleccion['duracion'] = configurar_duracion(recibo_eleccion)
             case "4":
-                recibo_eleccion['importe_cobrar'] = configurar_importe_cobrar()
+                recibo_eleccion['importe_cobrar'] = configurar_importe_cobrar(recibo_eleccion)
             case "5":
-                recibo_eleccion['fecha_cobro'] = configurar_fecha_cobro()
+                recibo_eleccion['fecha_cobro'] = configurar_fecha_cobro(recibo_eleccion)
             case "6":
                 recibo_eleccion['estado_recibo'] = configurar_estado_recibo(recibo_eleccion['nro_poliza'], recibo_eleccion['duracion'], recibo_eleccion['fecha_inicio'], True, recibo_eleccion)
             case "7":
-                recibo_eleccion['importe_pagar'] = configurar_importe_pagar()
+                recibo_eleccion['importe_pagar'] = configurar_importe_pagar(recibo_eleccion)
             case "9":
                 break
             case _:
@@ -197,10 +197,13 @@ def seleccionar_recibo() -> str:
         else:
             print("El recibo no existe")
 
-def configurar_nro_poliza() -> str:
+def configurar_nro_poliza(recibo_modificar:dict = {}) -> str:
     """Pide el número de póliza, lo valida y lo retorna"""
     while True:
         nro_poliza = input("Introduce el número de póliza: ")
+
+        if nro_poliza == "" and recibo_modificar:
+            return recibo_modificar['nro_poliza']
         if nro_poliza == "":
             confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
             if confirmacion == "s":
@@ -221,18 +224,22 @@ def configurar_nro_poliza() -> str:
             if confirmacion == "s":
                 return ""
     
-def configurar_fecha_inicio() -> str:
+def configurar_fecha_inicio(recibo_modificar:dict = {}) -> str:
     """Pide la fecha de inicio del recibo, la valida y la retorna"""
     while True:
         fecha = input("Introduce la fecha de inicio del recibo: ")
+        if fecha == "" and recibo_modificar:
+            return recibo_modificar['fecha_inicio']
         if Utilidades.validar_fecha(fecha):
             return fecha
 
-def configurar_duracion() -> str:
+def configurar_duracion(recibo_modificar:dict = {}) -> str:
     """Pide la duración del recibo, la valida y la retorna"""
     while True:
         print("Introduce la duración del recibo:")
         entrada = input("(A)nual, (S)emestral, (T)rimestral, (M)ensual: ").upper()
+        if entrada == "" and recibo_modificar:
+            return recibo_modificar['duracion']
         if entrada in ["A", "S", "T", "M","ANUAL", "SEMESTRAL", "TRIMESTRAL", "MENSUAL"]:
             if entrada in ["A", "ANUAL"]:
                 entrada = "Anual"
@@ -246,10 +253,12 @@ def configurar_duracion() -> str:
                 print("Opción incorrecta")
             return entrada
 
-def configurar_importe_cobrar() -> float:
+def configurar_importe_cobrar(recibo_modificar:dict = {}) -> float:
     """Pide el importe del recibo, lo valida y lo retorna"""
     while True:
         importe_cobrar = input("Introduce el importe del recibo: ")
+        if importe_cobrar == "" and recibo_modificar:
+            return recibo_modificar['importe_cobrar']
         try:
             importe_cobrar = float(importe_cobrar)
             importe_cobrar = round(importe_cobrar, 2)
@@ -257,10 +266,12 @@ def configurar_importe_cobrar() -> float:
         except:
             print("El importe debe ser un número")
 
-def configurar_fecha_cobro() -> str:
+def configurar_fecha_cobro(recibo_modificar:dict = {}) -> str:
     """Pide la fecha de cobro del recibo, la valida y la retorna"""
     while True:
         entrada = input("Introduce la fecha de cobro del recibo (dd/mm/aaaa): ")
+        if entrada == "" and recibo_modificar:
+            return recibo_modificar['fecha_cobro']
         if Utilidades.validar_fecha(entrada):
             return entrada
 
@@ -269,6 +280,8 @@ def configurar_estado_recibo(poliza_nro:str, duracion_:str, fecha_:str, modifica
     """Pide el estado del recibo, lo valida y lo retorna"""
     while True:
         estado_recibo = input("Introduce el estado del recibo (P)endiente, (C)obrado, (B)aja: ").upper()
+        if estado_recibo == "" and recibo_modificando:
+            return recibo_modificando['estado_recibo']
         if estado_recibo in ["P", "C", "B", "PENDIENTE", "COBRADO", "BAJA"]:
             if estado_recibo in ["P","PENDIENTE"]:
                 for poliza in Polizas.listaPolizas:
@@ -293,39 +306,17 @@ def configurar_estado_recibo(poliza_nro:str, duracion_:str, fecha_:str, modifica
                 estado_recibo = "Baja"
             return estado_recibo
 
-def configurar_importe_pagar() -> float:
+def configurar_importe_pagar(recibo_modificar:dict = {}) -> float:
     """Pide el importe a pagar, lo valida y lo retorna"""
     while True:
         importe = input("Introduce el importe a pagar: ")
+        if importe == "" and recibo_modificar:
+            return recibo_modificar['importe_pagar']
         try:
             importe = float(importe)
             importe = round(importe, 2)
             return importe
         except:
             print("El importe debe ser un número")
-
-def configurar_estado_liquidacion() -> str:
-    """Pide el estado de la liquidación, lo valida y lo retorna"""
-    while True:
-        estado = input("Introduce el estado de la liquidación (P)endiente, (L)iquidado ").upper()
-        if estado in ["P", "L", "PENDIENTE", "LIQUIDADO"]:
-            if estado in ["P", "Pendiente"]:
-                estado = "Pendiente"
-            elif estado in ["L", "Liquidado"]:
-                estado = "Liquidado"
-            return estado
-
-def configurar_fecha_liquidacion(estado) -> str:
-    """Pide la fecha de liquidación, la valida y la retorna"""
-    if estado == "Liquidado":
-        while True:
-            entrada = input("Introduce la fecha de liquidación: ")
-            if Utilidades.validar_fecha(entrada):
-                return entrada
-    else:
-        return ""
-
-
-
 
 listaRecibos = list()

@@ -33,7 +33,7 @@ def mostrar_menu_crear_tomador() -> None:
     if id_tomador == "":
         return
     
-    denominacion = input("Introduce el nombre de la persona o empresa: ")
+    denominacion = configurar_descripcion()
     fecha_nacimiento = configurar_fecha_nacimiento(id_tomador)
     domicilio = configurar_domicilio()
     movil_contacto = configurar_movil_contacto()
@@ -70,7 +70,7 @@ def mostrar_menu_modificar_tomador() -> None:
         opcion_modificar = input("Introduce una opción: ")
         match opcion_modificar:
             case "1":
-                dato["denominacion"] = input("Introduce la nueva denominación: ")
+                dato["denominacion"] = configurar_descripcion(tomador_eleccion)
             case "2":
                 dato["fecha_nacimiento"] = configurar_fecha_nacimiento(id_tomador,tomador_eleccion)
             case "3":
@@ -155,19 +155,19 @@ def guardar_tomadores() -> None:
     except:
         print(f"Error al guardar los tomadores")
 
-def configurar_tomador(modificando:bool=False,tomador_eleccion:dict = {}) -> str:
+def configurar_tomador(modificando:bool=False) -> str:
     """Pide el DNI, NIE o CIF del tomador y devuelve el valor introducido. Si el valor ya existe en la lista de tomadores, lo indica y pide otro valor. Si el valor introducido no es correcto, lo indica y pide otro valor."""
     while True:
         tomador_id = input("Introduce el DNI, NIE o CIF del tomador: ").upper()
-        if tomador_id == "" and tomador_eleccion:
-            return tomador_eleccion["id_tomador"]
         if tomador_id == "":
             confirmacion = input("¿Quieres cancelar la operación? (s/n): ").lower()
             if confirmacion == "s":
                 return ""
             continue
+        # Comprobamos si el tomador ya existe cuando estamos creando
         elif tomador_id in [tomador["id_tomador"] for tomador in listaTomadores] and not modificando:
             print("El tomador ya existe")
+        # Comprobamos si el tomador no existe cuando estamos modificando
         elif tomador_id not in [tomador["id_tomador"] for tomador in listaTomadores] and modificando:
             print("El tomador no existe")
         elif Utilidades.comprobar_dni(tomador_id)[0]:
@@ -175,7 +175,7 @@ def configurar_tomador(modificando:bool=False,tomador_eleccion:dict = {}) -> str
         else:
             print("DNI, NIE o CIF incorrecto")
 
-def configurar_descrion(tomador_eleccion:dict = {}) -> str:
+def configurar_descripcion(tomador_eleccion:dict = {}) -> str:
     """Pide la descripción de un tomador y devuelve el valor introducido"""
     while True:
         entrada = input("Introduce la descripción del tomador: ")
