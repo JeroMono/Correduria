@@ -36,7 +36,7 @@
     },
     {
         "nro_liquidacion": "2025-000001",
-        "fecha_liquidacion": "30/04/2025",
+        "fecha_liquidacion": "03/05/2025",
         "estado_liquidacion": "Abierta",
         "importe_recibos_cobrados": 1015.0,
         "lista_recibos_liquidar": [
@@ -64,7 +64,7 @@
                 "000000000000"
             ]
         ],
-        "importe_siniestros_pagados": 2035.2,
+        "importe_siniestros_pagados": 923.2,
         "lista_siniestros_liquidados": [
             [
                 "000000000001",
@@ -80,7 +80,7 @@
             ]
         ],
         "importe_liquidacion": [
-            -1020.2,
+            91.8,
             250.0
         ]
     }

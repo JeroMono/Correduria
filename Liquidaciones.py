@@ -79,7 +79,7 @@ def mostrar_menu_modificar_liquidacion() -> None:
 
     importe_siniestros_pagados, lista_siniestros_liquidados = calcular_siniestros_pagados(fecha_liquidacion)
 
-    importe_liquidacion = (importe_recibos_cobrados - importe_siniestros_pagados, importe_recibos_baja)
+    importe_liquidacion = (round(importe_recibos_cobrados - importe_siniestros_pagados,2), round(importe_recibos_baja,2))
 
     liquidacion_modificar["importe_recibos_cobrados"] = importe_recibos_cobrados
 
@@ -277,7 +277,6 @@ def calcular_recibos_cobrados(fecha_liquidacion:str) -> tuple:
     for recibo in Recibos.listaRecibos:
         if (recibo["estado_recibo"] in ["Cobrado", "Cobrado_Banco"]) and recibo["estado_liquidacion"] == "Pendiente":
             fecha_cobro = list(map(int, recibo["fecha_cobro"].split("/")))[::-1]
-            print(fecha_cobro, fecha_liquidacion, fecha_cobro < fecha_liquidacion)
             if fecha_cobro < fecha_liquidacion:
                 importe_recibos_cobrados += recibo["importe_cobrar"]
                 lista_recibos_liquidar.append((recibo["nro_poliza"],recibo["id_recibo"]))
@@ -291,7 +290,6 @@ def calcular_recibos_baja(fecha_liquidacion:str) -> tuple:
     for recibo in Recibos.listaRecibos:
         if recibo["estado_recibo"] == "Baja" and recibo["estado_liquidacion"] == "Pendiente":
             fecha_cobro = list(map(int, recibo["fecha_cobro"].split("/")))[::-1]
-            print("baja",fecha_cobro, fecha_liquidacion, fecha_cobro < fecha_liquidacion)
             if fecha_cobro < fecha_liquidacion:
                 importe_recibos_baja += recibo["importe_cobrar"]
                 lista_recibos_baja.append((recibo["nro_poliza"],recibo["id_recibo"]))
