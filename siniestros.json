@@ -1,7 +1,7 @@
 {
     "ultimos_siniestros": {
         "2024": 3,
-        "2025": 1
+        "2025": 2
     },
     "listaSiniestros": [
         {
@@ -59,6 +59,19 @@
         {
             "nro_siniestro": "2025-000001",
             "nro_poliza": "000000000000",
+            "descripcion": "Fallo mecánico, choque trasero",
+            "matricula_contrario": "4343hjh",
+            "compañia_contrario": "Ocaso",
+            "nro_poliza_contrario": "3234",
+            "importe_pagar": 400.0,
+            "estado_siniestro": "Pagado",
+            "fecha_abono": "16/2/2025",
+            "estado_liquidacion": "Pendiente",
+            "fecha_liquidacion": ""
+        },
+        {
+            "nro_siniestro": "2025-000002",
+            "nro_poliza": "000000000005",
             "descripcion": "Fallo mecánico, choque trasero",
             "matricula_contrario": "4343hjh",
             "compañia_contrario": "Ocaso",
